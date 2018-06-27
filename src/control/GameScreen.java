@@ -1,8 +1,6 @@
 package control;
 
-import elements.Skull;
-import elements.Lolo;
-import elements.Element;
+import elements.*;
 import utils.Consts;
 import utils.Drawing;
 import java.awt.Graphics;
@@ -28,6 +26,7 @@ public class GameScreen extends javax.swing.JFrame implements KeyListener {
     private final Lolo lolo;
     private final ArrayList<Element> elemArray;
     private final GameController controller = new GameController();
+    private final TetrisObject activeTetrisObject;
 
     public GameScreen() {
         Drawing.setGameScreen(this);
@@ -36,8 +35,8 @@ public class GameScreen extends javax.swing.JFrame implements KeyListener {
         this.addKeyListener(this);   /*teclado*/
         
         /*Cria a janela do tamanho do tabuleiro + insets (bordas) da janela*/
-        this.setSize(Consts.NUM_CELLS * Consts.CELL_SIZE + getInsets().left + getInsets().right,
-                     Consts.NUM_CELLS * Consts.CELL_SIZE + getInsets().top + getInsets().bottom);
+        this.setSize(Consts.NUM_COLUMNS * Consts.CELL_SIZE + getInsets().left + getInsets().right,
+                     Consts.NUM_LINES * Consts.CELL_SIZE + getInsets().top + getInsets().bottom);
 
         elemArray = new ArrayList<Element>();
 
@@ -46,9 +45,9 @@ public class GameScreen extends javax.swing.JFrame implements KeyListener {
         lolo.setPosition(0, 0);
         this.addElement(lolo);
         
-        Skull skull = new Skull("caveira.png");
-        skull.setPosition(9, 1);
-        this.addElement(skull);  
+        activeTetrisObject = new TetrisObject();
+        for(int i = 0; i < 4; i++)
+        this.addElement(activeTetrisObject.pieces[i]);
     }
     
     public final void addElement(Element elem) {
@@ -70,8 +69,8 @@ public class GameScreen extends javax.swing.JFrame implements KeyListener {
            Trocar essa parte por uma estrutura mais bem organizada
            Utilizando a classe Stage
         */
-        for (int i = 0; i < Consts.NUM_CELLS; i++) {
-            for (int j = 0; j < Consts.NUM_CELLS; j++) {
+        for (int i = 0; i < Consts.NUM_LINES                                                                                                                            ; i++) {
+            for (int j = 0; j < Consts.NUM_COLUMNS; j++) {
                 try {
                     Image newImage = Toolkit.getDefaultToolkit().getImage(new java.io.File(".").getCanonicalPath() + Consts.IMG_PATH + "bricks.png");
                     g2.drawImage(newImage,
@@ -106,17 +105,16 @@ public class GameScreen extends javax.swing.JFrame implements KeyListener {
     }
     
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_UP) {
-            lolo.moveUp();
-        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            lolo.moveDown(); 
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            lolo.moveLeft();
-        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            lolo.moveRight();
+        for(int i = 0; i < 4; i++) {
+            if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                activeTetrisObject.pieces[i].moveDown();
+            } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                activeTetrisObject.pieces[i].moveLeft();
+            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                activeTetrisObject.pieces[i].moveRight();
+            } else break;
         }
 
-        
         //repaint(); /*invoca o paint imediatamente, sem aguardar o refresh*/
     }
     

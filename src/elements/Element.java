@@ -24,14 +24,14 @@ public abstract class Element implements Serializable{
 
     protected Element(String imageName) {
         this.pos = new Position(1, 1);
-        this.isTransposable = true;
+        this.isTransposable = false;
         this.isMortal = false;
         
         try {
             imageIcon = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.IMG_PATH + imageName);
             Image img = imageIcon.getImage();
             BufferedImage bi = new BufferedImage(Consts.CELL_SIZE, Consts.CELL_SIZE, BufferedImage.TYPE_INT_ARGB);
-            Graphics g = bi.createGraphics();
+            Graphics g = bi.createGraphics();//
             g.drawImage(img, 0, 0, Consts.CELL_SIZE, Consts.CELL_SIZE, null);
             imageIcon = new ImageIcon(bi);
             

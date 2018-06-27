@@ -32,18 +32,18 @@ public class Position implements Serializable {
         //x = (double)Math.round(x * factor) / factor;
         //y = (double)Math.round(y * factor) / factor;
         
-        if(x < 0 || x > utils.Consts.NUM_CELLS-1)
+        if(x < 0 || x > Consts.NUM_LINES-1)
             return false;
         previousX = this.x;
         this.x = x;
         
-        if(y < 0 || y > utils.Consts.NUM_CELLS-1)
+        if(y < 0 || y > Consts.NUM_COLUMNS-1)
             return false;
         previousY = this.y;
         this.y = y;
         return true;
     }
-    
+
     public int getX(){
         return x;
     }

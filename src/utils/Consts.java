@@ -10,8 +10,9 @@ import java.io.File;
  */
 public class Consts {
     public static final int CELL_SIZE = 30;
-    public static final int NUM_CELLS = 20;
-    
+    public static final int NUM_COLUMNS = 10;
+    public static final int NUM_LINES = 18;
+
     public static final String IMG_PATH = File.separator+"imgs"+File.separator;
     
     public static final int DELAY_SCREEN_UPDATE = 20;

@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
  * @author Luiz Eduardo
  * Baseado em material do Prof. Jose Fernando Junior
  */
-public class Drawing {
+public class                                                                        Drawing {
     static GameScreen screen;
 
     public static GameScreen getGameScreen() {

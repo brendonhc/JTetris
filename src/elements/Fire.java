@@ -11,7 +11,7 @@ import java.io.Serializable;
  * Baseado em material do Prof. Jose Fernando Junior
  */
 public class Fire extends Element implements Serializable{
-    public static final int DELAY_MOVIMENT = 5;
+    public static final int DELAY_MOVEMENT = 1;
     private int countDelay = 0;
     
     public Fire(String imageName) {
@@ -24,7 +24,7 @@ public class Fire extends Element implements Serializable{
         Drawing.draw(g, this.imageIcon, pos.getY(), pos.getX());
         
         countDelay++;
-        if(countDelay == DELAY_MOVIMENT) {
+        if(countDelay == DELAY_MOVEMENT) {
             if(!this.moveRight())
                 Drawing.getGameScreen().removeElement(this);
             
