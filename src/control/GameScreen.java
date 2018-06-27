@@ -91,6 +91,10 @@ public class GameScreen extends javax.swing.JFrame implements KeyListener {
         if (!getBufferStrategy().contentsLost()) {
             getBufferStrategy().show();
         }
+
+
+        if (activeTetrisObject.getObjectBoundaries().highestX == Consts.NUM_LINES - 1 && activeTetrisObject.pieces[0].getContIntervals() == Square.TIMER_FIRE - 1)
+            activeTetrisObject.deactivatePieces();
     }
     
     public void go() {
@@ -105,12 +109,13 @@ public class GameScreen extends javax.swing.JFrame implements KeyListener {
     }
     
     public void keyPressed(KeyEvent e) {
-        for(int i = 0; i < 4; i++) {
+        Boundaries objBoundaries = activeTetrisObject.getObjectBoundaries();
+        for(int i = 0; i < 4 && activeTetrisObject.isActive; i++) {
             if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                 activeTetrisObject.pieces[i].moveDown();
-            } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            } else if (e.getKeyCode() == KeyEvent.VK_LEFT && objBoundaries.lowestY > 0) {
                 activeTetrisObject.pieces[i].moveLeft();
-            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT && objBoundaries.highestY < Consts.NUM_COLUMNS - 1) {
                 activeTetrisObject.pieces[i].moveRight();
             } else break;
         }

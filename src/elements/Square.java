@@ -17,6 +17,10 @@ public class Square extends Element implements Serializable {
 
     }
 
+    public int getContIntervals() {
+        return this.contIntervals;
+    }
+
     public void deactivate() {
         this.isActive = false;
     }

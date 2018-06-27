@@ -8,7 +8,7 @@ import java.util.Random;
 public class TetrisObject implements Serializable {
     public TetrisObjectType type;
     public Square[] pieces = new Square[4];
-
+    public Boolean isActive = true;
 
     public TetrisObject() {
         type = TetrisObjectType.values()[new Random().nextInt(TetrisObjectType.values().length)];
@@ -61,6 +61,29 @@ public class TetrisObject implements Serializable {
                 pieces[2].setPosition(0, Consts.NUM_COLUMNS/2 - 1);
                 pieces[3].setPosition(1, Consts.NUM_COLUMNS/2 + 1);
                 break;
+        }
+    }
+
+    public Boundaries getObjectBoundaries() {
+        Boundaries b = new Boundaries();
+        b.highestX = pieces[0].pos.getX();
+        b.lowestY = pieces[0].pos.getY();
+        b.highestY = pieces[0].pos.getY();
+        for (int i = 1; i < 4; i++) {
+            if (pieces[i].pos.getX() > b.highestX) b.highestX = pieces[i].pos.getX();
+            if (pieces[i].pos.getY() < b.lowestY) b.lowestY = pieces[i].pos.getY();
+            if (pieces[i].pos.getY() > b.highestY) b.highestY = pieces[i].pos.getY();
+        }
+
+        //System.out.println(b.toString());
+
+        return b;
+    }
+
+    public void deactivatePieces() {
+        if (isActive) {
+            this.isActive = false;
+            for (int i = 0; i < 4; i++) pieces[i].deactivate();
         }
     }
 
