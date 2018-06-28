@@ -1,20 +1,26 @@
 package control;
 
 /**
- * Projeto de POO 2017
+ * Projeto de POO 2018
  * 
- * @author Luiz Eduardo
- * Baseado em material do Prof. Jose Fernando Junior
+ * @authors Brendon Hudson, Matheus Carvalho, Sergio Piza
+ *
+ * Baseado em material do Prof. Luiz Eduardo
  */
 public class Main {
 
+    /**
+     * Método estático main que inicia o game com seu menu.
+     */
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                GameScreen screen = new GameScreen();
-                screen.setVisible(true);
-                screen.createBufferStrategy(2);
-                screen.go();
+                GameMenu mainMenu = new GameMenu();
+//                GameScreen screen = new GameScreen();
+//                screen.setVisible(true);
+//                screen.createBufferStrategy(2);
+//                screen.go();
+
             }
         });
     }
