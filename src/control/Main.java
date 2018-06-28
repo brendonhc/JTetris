@@ -18,10 +18,7 @@ public class Main {
                 GameMenu mainMenu = new GameMenu();
                 mainMenu.setVisible(true);
 
-//                GameScreen screen = new GameScreen();
-//                screen.setVisible(true);
-//                screen.createBufferStrategy(2);
-//                screen.go();
+
 
             }
         });
