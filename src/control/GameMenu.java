@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 
 
 public class GameMenu extends JFrame implements ActionListener {
-    private GameScreen gameScreen;
+    private GameFrame gameScreen;
 
     private JPanel GameMenu;
     private JPanel Buttons;
@@ -37,7 +37,7 @@ public class GameMenu extends JFrame implements ActionListener {
     }
 
     private void newGame() {
-        gameScreen = new GameScreen();
+        gameScreen = new GameFrame();
         gameScreen.setVisible(true);
         gameScreen.createBufferStrategy(2);
         gameScreen.go();

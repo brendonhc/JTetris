@@ -3,9 +3,8 @@ package control;
 import elements.*;
 import utils.Consts;
 import utils.Drawing;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Toolkit;
+
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
@@ -17,26 +16,32 @@ import java.util.logging.Logger;
 
 /**
  * Projeto de POO 2017
- * 
+ *
  * @author Luiz Eduardo
  * Baseado em material do Prof. Jose Fernando Junior
  */
-public class GameScreen extends javax.swing.JFrame implements KeyListener {
-    
+public class GameFrame extends javax.swing.JFrame implements KeyListener {
+
     private final Lolo lolo;
     private final ArrayList<Element> elemArray;
     private final GameController controller = new GameController();
     private final TetrisObject activeTetrisObject;
 
-    public GameScreen() {
-        Drawing.setGameScreen(this);
+    private int gameScreenWidth;
+    private int gameScreenHeight;
+
+    public GameFrame() {
+        Drawing.setGameFrame(this);
         initComponents();
-        
+
         this.addKeyListener(this);   /*teclado*/
-        
+
+        gameScreenWidth = Consts.NUM_COLUMNS * Consts.CELL_SIZE + getInsets().left + getInsets().right;
+        gameScreenHeight = Consts.NUM_LINES * Consts.CELL_SIZE + getInsets().top + getInsets().bottom;
+
         /*Cria a janela do tamanho do tabuleiro + insets (bordas) da janela*/
-        this.setSize(Consts.NUM_COLUMNS * Consts.CELL_SIZE + getInsets().left + getInsets().right,
-                     Consts.NUM_LINES * Consts.CELL_SIZE + getInsets().top + getInsets().bottom);
+        this.setSize(gameScreenWidth + 400,
+                gameScreenHeight);
 
         elemArray = new ArrayList<Element>();
 
@@ -44,27 +49,27 @@ public class GameScreen extends javax.swing.JFrame implements KeyListener {
         lolo = new Lolo("lolo.png");
         lolo.setPosition(0, 0);
         this.addElement(lolo);
-        
+
         activeTetrisObject = new TetrisObject();
         for(int i = 0; i < 4; i++)
-        this.addElement(activeTetrisObject.pieces[i]);
+            this.addElement(activeTetrisObject.pieces[i]);
     }
-    
+
     public final void addElement(Element elem) {
         elemArray.add(elem);
     }
-    
+
     public void removeElement(Element elem) {
         elemArray.remove(elem);
     }
-    
+
     @Override
     public void paint(Graphics gOld) {
         Graphics g = getBufferStrategy().getDrawGraphics();
-        
+
         /*Criamos um contexto grafico*/
         Graphics g2 = g.create(getInsets().right, getInsets().top, getWidth() - getInsets().left, getHeight() - getInsets().bottom);
-        
+
         /* DESENHA CENARIO
            Trocar essa parte por uma estrutura mais bem organizada
            Utilizando a classe Stage
@@ -75,17 +80,17 @@ public class GameScreen extends javax.swing.JFrame implements KeyListener {
                     Image newImage = Toolkit.getDefaultToolkit().getImage(new java.io.File(".").getCanonicalPath() + Consts.IMG_PATH + "bricks.png");
                     g2.drawImage(newImage,
                             j * Consts.CELL_SIZE, i * Consts.CELL_SIZE, Consts.CELL_SIZE, Consts.CELL_SIZE, null);
-                    
+
                 } catch (IOException ex) {
-                    Logger.getLogger(GameScreen.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(GameFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
-        
+
         this.controller.drawAllElements(elemArray, g2);
         this.controller.processAllElements(elemArray);
         this.setTitle("-> Cell: " + lolo.getStringPosition());
-        
+
         g.dispose();
         g2.dispose();
         if (!getBufferStrategy().contentsLost()) {
@@ -96,10 +101,10 @@ public class GameScreen extends javax.swing.JFrame implements KeyListener {
         if (activeTetrisObject.getObjectBoundaries().highestX == Consts.NUM_LINES - 1 && activeTetrisObject.pieces[0].getContIntervals() == Square.TIMER_FIRE - 1)
             activeTetrisObject.deactivatePieces();
     }
-    
+
     public void go() {
         TimerTask task = new TimerTask() {
-            
+
             public void run() {
                 repaint();
             }
@@ -107,12 +112,17 @@ public class GameScreen extends javax.swing.JFrame implements KeyListener {
         Timer timer = new Timer();
         timer.schedule(task, 0, Consts.DELAY_SCREEN_UPDATE);
     }
-    
+
     public void keyPressed(KeyEvent e) {
         Boundaries objBoundaries = activeTetrisObject.getObjectBoundaries();
         for(int i = 0; i < 4 && activeTetrisObject.isActive; i++) {
-            if (e.getKeyCode() == KeyEvent.VK_DOWN && objBoundaries.highestX < Consts.NUM_LINES - 1) {
-                activeTetrisObject.pieces[i].moveDown();
+            if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+
+                if (objBoundaries.highestX < Consts.NUM_LINES - 1)
+                    activeTetrisObject.pieces[i].moveDown();
+                else
+                    activeTetrisObject.deactivatePieces();
+
             } else if (e.getKeyCode() == KeyEvent.VK_LEFT && objBoundaries.lowestY > 0) {
                 activeTetrisObject.pieces[i].moveLeft();
             } else if (e.getKeyCode() == KeyEvent.VK_RIGHT && objBoundaries.highestY < Consts.NUM_COLUMNS - 1) {
@@ -122,7 +132,7 @@ public class GameScreen extends javax.swing.JFrame implements KeyListener {
 
         //repaint(); /*invoca o paint imediatamente, sem aguardar o refresh*/
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -141,23 +151,23 @@ public class GameScreen extends javax.swing.JFrame implements KeyListener {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 500, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 500, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 500, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 500, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-    
+
     @Override
     public void keyTyped(KeyEvent e) {
     }
-    
+
     @Override
     public void keyReleased(KeyEvent e) {
     }

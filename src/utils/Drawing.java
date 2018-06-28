@@ -1,6 +1,7 @@
 package utils;
 
 import control.GameScreen;
+import control.GameFrame;
 import java.awt.Graphics;
 import javax.swing.ImageIcon;
 
@@ -19,7 +20,19 @@ public class Drawing {
 
     public static void setGameScreen(GameScreen newScreen) {
         screen = newScreen;
-    }    
+    }
+
+
+    static GameFrame screen2;
+
+    public static GameFrame getGameFrame() {
+        return screen2;
+    }
+
+    public static void setGameFrame(GameFrame newScreen) {
+        screen2 = newScreen;
+    }
+
     public static void draw(Graphics g, ImageIcon imageIcon, double y, double x) {
         //System.out.println("y="+(y * Consts.CELL_SIZE)+", x="+(x * Consts.CELL_SIZE));
         imageIcon.paintIcon(screen, g, (int)Math.round(y * Consts.CELL_SIZE),(int)Math.round(x * Consts.CELL_SIZE));
