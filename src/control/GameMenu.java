@@ -5,10 +5,28 @@ import utils.Consts;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 
+/**
+ * Classe que implementa o menu do game e suas funcionalidades
+ * <p>
+ *     <p>
+ *         No primeiro momento é verificado se há ou não jogos salvos no diretório do game,
+ *     se houver, a interface do botão "Continuar" fica normal, se não, fica como "clicado",
+ *     não sendo possível escolher essa opção.
+ *     </p>
+ *     <p>
+ *         Ao clicar em "Novo Jogo" (newGameButton), inicializa um jogo novo
+ *     </p>
+ *     <p>
+ *         Ao clicar em "Continuar (continueButton), quando possível, é carregado um estado
+ *         de jogo previamente salvo no diretório do jogo.
+ *     </p>
+ * </p>*/
 public class GameMenu extends JFrame implements ActionListener {
     private GameFrame gameScreen;
+    private File gameSave;
 
     private JPanel GameMenu;
     private JPanel Buttons;

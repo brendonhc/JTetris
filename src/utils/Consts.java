@@ -16,6 +16,7 @@ public class Consts {
     public static final String GAME_NAME = "TetriZika";
     public static final String IMG_PATH = File.separator + "imgs" + File.separator;
     public static final String MENU_BG_PATH = IMG_PATH + "bgMenu1.png";
+    public static final String GAME_SAVE_PATH = "save_game.dat";
 
     public static final int DELAY_SCREEN_UPDATE = 20;
 }
