@@ -34,7 +34,8 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         Drawing.setGameFrame(this);
         initComponents();
 
-        this.addKeyListener(this);   /*teclado*/
+        /* GameFrame atual passa a "ouvir" o teclado */
+        this.addKeyListener(this);
 
         gameScreenWidth = Consts.NUM_COLUMNS * Consts.CELL_SIZE + getInsets().left + getInsets().right;
         gameScreenHeight = Consts.NUM_LINES * Consts.CELL_SIZE + getInsets().top + getInsets().bottom;

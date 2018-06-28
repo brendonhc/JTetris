@@ -24,7 +24,10 @@ import java.io.*;
  *         Ao clicar em "Continuar (continueButton), quando possível, é carregado um estado
  *         de jogo previamente salvo no diretório do jogo.
  *     </p>
- * </p>*/
+ * </p>
+ *
+ * @author Brendon Hudson
+ **/
 public class GameMenu extends JFrame implements ActionListener {
     private GameFrame gameScreen;
     private File savedGame;

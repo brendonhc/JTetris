@@ -1,6 +1,5 @@
 package utils;
 
-import control.GameScreen;
 import control.GameFrame;
 import java.awt.Graphics;
 import javax.swing.ImageIcon;
@@ -12,25 +11,15 @@ import javax.swing.ImageIcon;
  * Baseado em material do Prof. Jose Fernando Junior
  */
 public class Drawing {
-    static GameScreen screen;
 
-    public static GameScreen getGameScreen() {
+    static GameFrame screen;
+
+    public static GameFrame getGameFrame() {
         return screen;
     }
 
-    public static void setGameScreen(GameScreen newScreen) {
-        screen = newScreen;
-    }
-
-
-    static GameFrame screen2;
-
-    public static GameFrame getGameFrame() {
-        return screen2;
-    }
-
     public static void setGameFrame(GameFrame newScreen) {
-        screen2 = newScreen;
+        screen = newScreen;
     }
 
     public static void draw(Graphics g, ImageIcon imageIcon, double y, double x) {
