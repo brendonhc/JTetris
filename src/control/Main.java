@@ -17,9 +17,6 @@ public class Main {
             public void run() {
                 GameMenu mainMenu = new GameMenu();
                 mainMenu.setVisible(true);
-
-
-
             }
         });
     }
