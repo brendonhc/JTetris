@@ -4,6 +4,8 @@ import elements.Boundaries;
 import elements.Element;
 import elements.Lolo;
 import elements.Square;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCombination;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -104,6 +106,16 @@ public class GameController implements KeyListener {
                         s.moveRight(); // Move para direita
                 }
 
+            }
+
+            /*ROTAÇÃO*/
+            else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                game.currentTetrisObject.rotate();
+            }
+
+            /*SALVAMENTO*/
+            else if (e.getKeyCode() == KeyEvent.VK_F1) { // A principio salva com F1
+                game.saveGame();
             }
         }
 

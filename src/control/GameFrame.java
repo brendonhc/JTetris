@@ -114,7 +114,10 @@ public class GameFrame extends javax.swing.JFrame {
                 "Game Over", JOptionPane.WARNING_MESSAGE);
     }
 
-    private void saveGame() {
+    /**
+     * Método que serializa o GameFrame atual, salvando o jogo
+     */
+    void saveGame() {
 
     }
 
@@ -241,7 +244,6 @@ public class GameFrame extends javax.swing.JFrame {
         }
         return false;
 }
-
 
     /**
      * Método que verifica se o objeto está encostando em algo a direita
