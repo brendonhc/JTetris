@@ -24,7 +24,7 @@ public class TetrisObject extends GameObject implements Serializable {
      */
     public TetrisObject(GameFrame gameFrame) {
         //type = TetrisObjectType.values()[new Random().nextInt(TetrisObjectType.values().length)];
-        type = TetrisObjectType.I;
+        type = TetrisObjectType.T;
         squaresNumber = 4;
         pieces = new Square[squaresNumber];
         isActive = true;
@@ -34,8 +34,6 @@ public class TetrisObject extends GameObject implements Serializable {
         // Para debug
         System.out.println("Novo TetrisObject: " + type);
 
-
-        type = TetrisObjectType.I;
 
 
         /*Monta a peça de acordo com seu tipo: I, J, O, L, S, T, Z (TetrisObjectType)*/
@@ -113,6 +111,9 @@ public class TetrisObject extends GameObject implements Serializable {
     public void rotate() {
 
         Position keyPos = pieces[2].pos;
+
+        if (this.type == TetrisObjectType.O) return;
+
         switch (rotatePosition) {
             case 0:
                 rotatePos1(keyPos);
@@ -213,11 +214,23 @@ public class TetrisObject extends GameObject implements Serializable {
                 break;
 
             case T:
-                for (int i = 0; i < 4; i++) pieces[i] = new Square(Square.PURPLE);
-                pieces[0].setPosition(0, Consts.NUM_COLUMNS/2);
-                pieces[1].setPosition(1, Consts.NUM_COLUMNS/2 - 1);
-                pieces[2].setPosition(1, Consts.NUM_COLUMNS/2);
-                pieces[3].setPosition(1, Consts.NUM_COLUMNS/2 + 1);
+                try {
+                    if (!gameFrame.objRightBoundsIsOccuped(this)) throw new Exception();
+                    if (gameFrame.objRightBoundsIsOccuped(this) && !gameFrame.objLeftBoundsIsOccuped(this)) {
+                        this.shiftLeft();
+                        throw new Exception();
+                    }
+                    if (!gameFrame.objRightBoundsIsOccuped(this) && gameFrame.objLeftBoundsIsOccuped(this)) {
+                        this.shiftRight();
+                        throw new Exception();
+                    }
+
+                } catch (Exception e) {
+                    pieces[0].setPosition(keyPos.getX(), keyPos.getY() - 1);
+                    pieces[1].setPosition(keyPos.getX(), keyPos.getY() + 1);
+                    pieces[3].setPosition(keyPos.getX() - 1, keyPos.getY());
+                }
+
                 break;
 
             case Z:
@@ -274,10 +287,21 @@ public class TetrisObject extends GameObject implements Serializable {
                 break;
 
             case T:
-                pieces[0].setPosition(0, Consts.NUM_COLUMNS/2);
-                pieces[1].setPosition(1, Consts.NUM_COLUMNS/2);
-                pieces[2].setPosition(1, Consts.NUM_COLUMNS/2 - 1);
-                pieces[3].setPosition(1, Consts.NUM_COLUMNS/2 + 1);
+                try {
+
+                    if (gameFrame.objLowerBoundsIsOccuped(this)) {
+                        if (!gameFrame.objUpperBoundsAreOccupied(this)) {
+                            this.shiftUp();
+
+                        }
+                    }
+
+                    throw new Exception();
+                } catch (Exception e) {
+                    pieces[0].setPosition(keyPos.getX() - 1, keyPos.getY());
+                    pieces[1].setPosition(keyPos.getX(), keyPos.getY() + 1);
+                    pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY());
+                }
                 break;
 
             case Z:
@@ -328,10 +352,25 @@ public class TetrisObject extends GameObject implements Serializable {
                 break;
 
             case T:
-                pieces[0].setPosition(0, Consts.NUM_COLUMNS/2);
-                pieces[1].setPosition(1, Consts.NUM_COLUMNS/2);
-                pieces[2].setPosition(1, Consts.NUM_COLUMNS/2 - 1);
-                pieces[3].setPosition(1, Consts.NUM_COLUMNS/2 + 1);
+                try {
+
+                    if (!gameFrame.objRightBoundsIsOccuped(this)) throw new Exception();
+
+                    if (!gameFrame.objRightBoundsIsOccuped(this) && gameFrame.objLeftBoundsIsOccuped(this)) {
+                        this.shiftRight();
+                        throw new Exception();
+                    }
+
+                    if (gameFrame.objRightBoundsIsOccuped(this) && !gameFrame.objLeftBoundsIsOccuped(this)) {
+                        this.shiftLeft();
+                        throw new Exception();
+                    }
+
+                } catch (Exception e) {
+                    pieces[0].setPosition(keyPos.getX(), keyPos.getY() - 1);
+                    pieces[1].setPosition(keyPos.getX(), keyPos.getY() + 1);
+                    pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY());
+                }
                 break;
 
             case Z:
@@ -382,10 +421,22 @@ public class TetrisObject extends GameObject implements Serializable {
                 break;
 
             case T:
-                pieces[0].setPosition(0, Consts.NUM_COLUMNS/2);
-                pieces[1].setPosition(1, Consts.NUM_COLUMNS/2);
-                pieces[2].setPosition(1, Consts.NUM_COLUMNS/2 - 1);
-                pieces[3].setPosition(1, Consts.NUM_COLUMNS/2 + 1);
+                try {
+
+                    if (gameFrame.objUpperBoundsAreOccupied(this)) {
+                        if (!gameFrame.objLowerBoundsIsOccuped(this)) {
+                            this.shiftDown();
+
+                        }
+                    }
+
+                    throw new Exception();
+
+                } catch (Exception e) {
+                    pieces[0].setPosition(keyPos.getX() - 1, keyPos.getY());
+                    pieces[1].setPosition(keyPos.getX(), keyPos.getY() - 1);
+                    pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY());
+                }
                 break;
 
             case Z:
@@ -405,5 +456,12 @@ public class TetrisObject extends GameObject implements Serializable {
         for (int i = 0; i < 4; i++) pieces[i].pos.moveRight();
     }
 
+    private void shiftUp() {
+        for (int i = 0; i < 4; i++) pieces[i].pos.moveUp();
+    }
+
+    private void shiftDown() {
+        for (int i = 0; i < 4; i++) pieces[i].pos.moveDown();
+    }
 
 }

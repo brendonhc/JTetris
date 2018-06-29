@@ -232,30 +232,7 @@ public class GameFrame extends javax.swing.JFrame {
          * 2º Ocupa a "gameSquares" com cada Square do GameObject (peça)
          * -------------------------------------------------------------------*/
         if (objLowerBoundsIsOccuped(currentTetrisObject) && currentTetrisObject.pieces[0].getContIntervals() == Square.TIMER_FIRE - 1) {
-            currentTetrisObject.desactivatePieces();
-
-            /*MARCA COMO OCUPADO ONDE A PEÇA CAIU e adiciona seus squares a "rowsSquares"*/
-            addGameObjectSquares(currentTetrisObject);
-
-            /*VERIFICA SE HOUVE PONTUAÇÃO*/
-            if (hasFilledRow()) {
-                int multPontuation = freeFilledRows();
-	            points.gain(multPontuation);
-	            System.out.println("Pontuação: " + points.getPoints());
-            }
-            /*Possível GAME_OVER*/
-            else if (currentTetrisObject.getObjectBoundaries().highestX < 3) {
-                System.out.println("GAME OVER");
-                isFull = true;
-
-                finishGame();
-	            JOptionPane.showMessageDialog(Main.MAIN_MENU, "Game Over",
-			            "Game Over", JOptionPane.WARNING_MESSAGE);
-            }
-
-            /*Lança uma NOVA PEÇA*/
-            playGame();
-
+            setDeactivatedPiece();
         }
 	    g2.drawString("Pontuação: " + points.getPoints(), 0, 0);
 	    g.dispose();
@@ -263,6 +240,32 @@ public class GameFrame extends javax.swing.JFrame {
 	    if (!getBufferStrategy().contentsLost()) {
 		    getBufferStrategy().show();
 	    }
+    }
+
+    public void setDeactivatedPiece() {
+        currentTetrisObject.desactivatePieces();
+
+        /*MARCA COMO OCUPADO ONDE A PEÇA CAIU e adiciona seus squares a "rowsSquares"*/
+        addGameObjectSquares(currentTetrisObject);
+
+        /*VERIFICA SE HOUVE PONTUAÇÃO*/
+        if (hasFilledRow()) {
+            int multPontuation = freeFilledRows();
+            points.gain(multPontuation);
+            System.out.println("Pontuação: " + points.getPoints());
+        }
+        /*Possível GAME_OVER*/
+        else if (currentTetrisObject.getObjectBoundaries().highestX < 3) {
+            System.out.println("GAME OVER");
+            isFull = true;
+
+            finishGame();
+            JOptionPane.showMessageDialog(Main.MAIN_MENU, "Game Over",
+                    "Game Over", JOptionPane.WARNING_MESSAGE);
+        }
+
+        /*Lança uma NOVA PEÇA*/
+        playGame();
     }
 
     /**
@@ -356,6 +359,22 @@ public class GameFrame extends javax.swing.JFrame {
 
             /*Se está adjacente a qualquer outro obstaculo de "gameSquares", true*/
             else if (gameSquares[x + 1][y] != null) return true;
+
+        }
+        return false;
+    }
+
+    public boolean objUpperBoundsAreOccupied(GameObject obj) {
+        int x, y;
+
+        for (Square s : obj.pieces) {
+            x = s.getPos().getX(); y = s.getPos().getY();
+
+            /*Se o Square atual está adjacente ao chão, true*/
+            if (x == 0) return true;
+
+                /*Se está adjacente a qualquer outro obstaculo de "gameSquares", true*/
+            else if (gameSquares[x - 1][y] != null) return true;
 
         }
         return false;

@@ -83,6 +83,8 @@ public class GameController implements KeyListener {
                 if (!game.objLowerBoundsIsOccuped(game.currentTetrisObject)) {
                     for (Square s : game.currentTetrisObject.pieces)
                         s.moveDown(); // Desce
+                } else {
+                    game.setDeactivatedPiece();
                 }
             }
 
