@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,15 +83,14 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
     private void playGame() {
 
         /*Gera aleatóriamente peças do game até chegar ao topo*/
-        do {
+        if (!isFull) {
             currentTetrisObject = new TetrisObject();
 
             /*Adiciona os blocos da peça ao array de elementos do frame*/
             for (int i = 0; i < 4; i++) {
                 this.addElement(currentTetrisObject.pieces[i]);
             }
-
-        } while (!isFull && !currentTetrisObject.isActive());
+        }
     }
 
 
@@ -103,6 +103,9 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
     }
 
     @Override
+    /**
+     * Método que aparentemente desenha o jogo constantemente (Brendon)
+     */
     public void paint(Graphics gOld) {
         Graphics g = getBufferStrategy().getDrawGraphics();
 
@@ -138,8 +141,11 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         }
 
         /*Verifica se a peça chegou ao chão e se já deu o tempo de movimento no mesmo*/
-        if (currentTetrisObject.getObjectBoundaries().highestX == Consts.NUM_LINES - 1 && currentTetrisObject.pieces[0].getContIntervals() == Square.TIMER_FIRE - 1)
+        if (currentTetrisObject.getObjectBoundaries().highestX == Consts.NUM_LINES - 1 && currentTetrisObject.pieces[0].getContIntervals() == Square.TIMER_FIRE - 1) {
             currentTetrisObject.deactivatePieces();
+            System.out.println("Chegou no FIM");
+            playGame(); /*Lança uma nova peça*/
+        }
     }
 
     /**
