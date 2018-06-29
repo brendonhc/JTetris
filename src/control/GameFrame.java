@@ -238,7 +238,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
             y = s.getPos().getY();
 
             /*O Square atual não pode estar adjacente a parede esquerda*/
-            if (y == Consts.NUM_COLUMNS - 2) return true;
+            if (y == 0) return true;
 
             /*A posição adjacente esquerda não pode estar ocupada*/
             else if (gameMatrix[x][y-1] == OCCUPED) return true;
@@ -265,7 +265,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
             y = s.getPos().getY();
 
             /*O Square atual não pode estar adjacente a parede esquerda*/
-            if (y == Consts.NUM_COLUMNS + 2) return true;
+            if (y == Consts.NUM_COLUMNS - 1) return true;
 
             /*A posição adjacente esquerda não pode estar ocupada*/
             else if (gameMatrix[x][y+1] == OCCUPED) return true;
