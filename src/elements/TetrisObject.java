@@ -13,9 +13,9 @@ import java.util.Random;
  * @author Sergio Piza, Brendon Hudson
  */
 public class TetrisObject implements Serializable {
-    public TetrisObjectType type;
+    private TetrisObjectType type;
+    private boolean isActive = true;
     public Square[] pieces = new Square[4];
-    public Boolean isActive = true;
 
 
     /**
@@ -83,6 +83,14 @@ public class TetrisObject implements Serializable {
                 pieces[3].setPosition(1, Consts.NUM_COLUMNS/2 + 1);
                 break;
         }
+    }
+
+    public TetrisObjectType getType() {
+        return type;
+    }
+
+    public boolean isActive() {
+        return isActive;
     }
 
     public Boundaries getObjectBoundaries() {

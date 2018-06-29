@@ -30,7 +30,10 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
     private final Lolo lolo;
     private final ArrayList<Element> elemArray;
     private final GameController controller = new GameController();
-    private final TetrisObject activeTetrisObject;
+
+    private static TetrisObject activeTetrisObject;
+    private static boolean gameMatrix[][];
+    private static boolean isFull;
 
     private int gameScreenWidth;
     private int gameScreenHeight;
@@ -61,9 +64,33 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
 
         this.addElement(lolo);
 
-        activeTetrisObject = new TetrisObject();
-        for(int i = 0; i < 4; i++)
-            this.addElement(activeTetrisObject.pieces[i]);
+        gameMatrix = new boolean[Consts.NUM_LINES][Consts.NUM_COLUMNS];
+        isFull = false;
+        activeTetrisObject = null;
+
+        playGame();
+    }
+
+    /**
+     * Método que inicia a lógica do game
+     *
+     * <p>
+     *     Enquanto a "matriz" do game não está coberta até o topo com peças,
+     *     é mandado mais peças para o jogador alocar
+     * </p>
+     */
+    private void playGame() {
+
+        /*Gera aleatóriamente peças do game até chegar ao topo*/
+        do {
+            activeTetrisObject = new TetrisObject();
+
+            /*Adiciona os blocos da peça ao array de elementos do frame*/
+            for (int i = 0; i < 4; i++) {
+                this.addElement(activeTetrisObject.pieces[i]);
+            }
+
+        } while (!isFull && activeTetrisObject.isActive());
     }
 
     public final void addElement(Element elem) {
@@ -98,9 +125,10 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
             }
         }
 
+        /*Desenha todos os elementos do "elemArray" na tela e escreve a peça atual*/
         this.controller.drawAllElements(elemArray, g2);
         this.controller.processAllElements(elemArray);
-        this.setTitle("-> Cell: " + lolo.getStringPosition());
+        this.setTitle(activeTetrisObject.getType().toString());
 
         g.dispose();
         g2.dispose();
@@ -108,7 +136,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
             getBufferStrategy().show();
         }
 
-
+        /*Verifica se a peça chegou ao chão e se já deu o tempo de movimento no mesmo*/
         if (activeTetrisObject.getObjectBoundaries().highestX == Consts.NUM_LINES - 1 && activeTetrisObject.pieces[0].getContIntervals() == Square.TIMER_FIRE - 1)
             activeTetrisObject.deactivatePieces();
     }
@@ -135,7 +163,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
 
         /* Para cada um dos 4 "Squares" que compõem a peça, faça o movimento
          * requisitado (direita, esquerda ou pra baixo) */
-        for (int i = 0; i < 4 && activeTetrisObject.isActive; i++) {
+        for (int i = 0; i < 4 && activeTetrisObject.isActive(); i++) {
             if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 
                 if (objBoundaries.highestX < Consts.NUM_LINES - 1)
