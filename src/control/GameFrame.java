@@ -15,10 +15,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Projeto de POO 2017
+ * Janela principal do Jogo em ação
+ * <p>
+ *     Classe que implementa o jogo propriamente dito
+ * </p>
  *
- * @author Luiz Eduardo
- * Baseado em material do Prof. Jose Fernando Junior
+ *
+ *
+ * @author Sergio Piza, Brendon Hudson
+ * Baseado em material do Prof. Luiz Eduardo
  */
 public class GameFrame extends javax.swing.JFrame implements KeyListener {
 

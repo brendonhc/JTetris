@@ -10,21 +10,17 @@ import java.io.*;
 
 
 /**
- * Classe que implementa o menu do game e suas funcionalidades
- * <p>
+ * <b>Classe que implementa o menu do game e suas funcionalidades</b>
  *     <p>
  *         No primeiro momento é verificado se há ou não jogos salvos no diretório do game,
- *     se houver, a interface do botão "Continuar" fica normal, se não, fica como "clicado",
- *     não sendo possível escolher essa opção.
- *     </p>
- *     <p>
- *         Ao clicar em "Novo Jogo" (newGameButton), inicializa um jogo novo
- *     </p>
- *     <p>
- *         Ao clicar em "Continuar (continueButton), quando possível, é carregado um estado
+ *         se houver, a interface do botão "Continuar" fica normal, se não, fica como "clicado",
+ *         não sendo possível escolher essa opção.
+ *         <br>
+ *         &emsp;Ao clicar em "Novo Jogo" (newGameButton), inicializa um jogo novo
+ *         <br>
+ *         &emsp;Ao clicar em "Continuar (continueButton), quando possível, é carregado um estado
  *         de jogo previamente salvo no diretório do jogo.
  *     </p>
- * </p>
  *
  * @author Brendon Hudson
  **/
@@ -79,7 +75,7 @@ public class GameMenu extends JFrame implements ActionListener {
      * <p>
      *     Serve para carregar jogos salvos anteriormente
      * </p>
-     * @param gameScreen
+     * @param gameScreen JFrame com o jogo inicializado
      */
     private void startGame(GameFrame gameScreen) {
         gameScreen.setVisible(true);
@@ -90,29 +86,20 @@ public class GameMenu extends JFrame implements ActionListener {
     /**
      * Método que responde as ações no Menu do Jogo
      * <p>
-     *     <ul>
-     *         Novo Jogo
-     *         <p>
-     *             Simplesmente, inicia um jogo do zero com o método startGame()
-     *         </p>
-     *     </ul>
-     *     <ul>
-     *         Continuar
-     *         <p>
-     *             Des-serializa o Objeto "GameFrame" serializado, referente a uma
+     *     <b>Novo Jogo</b>
+     *         <p>Simplesmente, inicia um jogo do zero com o método startGame()</p>
+     *
+     *
+     *     <b>Continuar</b>
+     *         <p>Des-serializa o Objeto "GameFrame" serializado, referente a uma
      *             gravação previamente salva por um jogador, e então, inicia o jogo
      *             com o método startGame(savedGameScreen).
-     *             <!--(É necessário verificar antes de a gravação em Consts.SAVED_GAME_PATH existe-->
-     *         </p>
-     *     </ul>
-     *     <ul>
-     *         Opções:
-     *         <p>
-     *             Lança uma janela com opções para um Novo Jogo como ...
-     *         </p>
-     *     </ul>
-     * </p>
-     * @param e
+     *             <!--(É necessário verificar antes de a gravação em Consts.SAVED_GAME_PATH existe--></p>
+     *
+     *     <b>Opções:</b>
+     *         <p>Lança uma janela com opções para um Novo Jogo como ... </p>
+     *
+     * @param e Evento gerado no frame do menu por algum de seus botões
      */
     @Override
     public void actionPerformed(ActionEvent e) {

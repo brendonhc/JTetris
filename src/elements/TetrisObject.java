@@ -5,6 +5,13 @@ import utils.Consts;
 import java.io.Serializable;
 import java.util.Random;
 
+/**
+ * Classe que implementa uma peça qualquer do jogo
+ *
+ * <p> descrição detalhada do funcionamento da classe... </p>
+ *
+ * @author Sergio Piza, Brendon Hudson
+ */
 public class TetrisObject implements Serializable {
     public TetrisObjectType type;
     public Square[] pieces = new Square[4];
