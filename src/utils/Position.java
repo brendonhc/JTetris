@@ -27,6 +27,16 @@ public class Position implements Serializable {
         this.setPosition(x,y);
     }
 
+    @Override
+    public String toString() {
+        return "Position{" +
+                "x=" + x +
+                ", y=" + y +
+                ", previousX=" + previousX +
+                ", previousY=" + previousY +
+                '}';
+    }
+
     public final boolean setPosition(int x, int y){
         //int factor = (int)Math.pow(10, WALK_STEP_DEC_PLACES+1);
         //x = (double)Math.round(x * factor) / factor;
@@ -68,4 +78,6 @@ public class Position implements Serializable {
     public boolean moveLeft(){
         return this.setPosition(this.getX(), this.getY()-1);        
     }
+
+
 }

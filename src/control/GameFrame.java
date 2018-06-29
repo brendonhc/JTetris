@@ -104,7 +104,7 @@ public class GameFrame extends javax.swing.JFrame {
 
         /*Gera aleatóriamente peças do game até chegar ao topo*/
         if (!isFull) {
-            currentTetrisObject = new TetrisObject();
+            currentTetrisObject = new TetrisObject(this);
 
             /*Adiciona os blocos da peça ao array de elementos do frame*/
             for (int i = 0; i < 4; i++) {
@@ -283,7 +283,7 @@ public class GameFrame extends javax.swing.JFrame {
      * @param obj um GameObject qualquer
      * @return true or false
      */
-    boolean objLowerBoundsIsOccuped(GameObject obj) {
+    public boolean objLowerBoundsIsOccuped(GameObject obj) {
         int x, y;
 
         for (Square s : obj.pieces) {
@@ -309,7 +309,7 @@ public class GameFrame extends javax.swing.JFrame {
      * @param obj um GameObject qualquer
      * @return true or false
      */
-    boolean objLeftBoundsIsOccuped(GameObject obj) {
+    public boolean objLeftBoundsIsOccuped(GameObject obj) {
         int x, y;
         for (Square s : obj.pieces) {
             x = s.getPos().getX();
@@ -335,7 +335,7 @@ public class GameFrame extends javax.swing.JFrame {
      * @param obj um GameObject qualquer
      * @return true or false
      */
-    boolean objRightBoundsIsOccuped(GameObject obj) {
+    public boolean objRightBoundsIsOccuped(GameObject obj) {
         int x, y;
         for (Square s : obj.pieces) {
             x = s.getPos().getX();

@@ -54,8 +54,13 @@ public abstract class Element implements Serializable{
     public String getStringPosition() {
         return ("(" + pos.getX() + ", " + pos.getY() + ")");
     }
-    
+
     public boolean setPosition(int x, int y) {
+        return setPosition(x, y, false);
+    }
+
+    public boolean setPosition(int x, int y, boolean test) {
+         if ( test ) System.out.println("Setting position to x = " + x + " and y = " + y);
         return pos.setPosition(x, y);
     }
 
