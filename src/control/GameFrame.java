@@ -26,18 +26,16 @@ import java.util.logging.Logger;
  * @author Sergio Piza, Brendon Hudson
  *  - Baseado em material do Prof. Luiz Eduardo
  */
-public class GameFrame extends javax.swing.JFrame implements KeyListener {
-
-    private final Lolo lolo;
-    private final ArrayList<Element> elemArray;
-    private final GameController controller = new GameController();
-
-    private static TetrisObject currentTetrisObject;
-    private static boolean gameMatrix[][];
-    private static boolean isFull;
-
+public class GameFrame extends javax.swing.JFrame {
     private static final boolean FREE = false;
     private static final boolean OCCUPED = true;
+
+    private ArrayList<Element> elemArray;
+    private GameController controller;
+
+    protected TetrisObject currentTetrisObject;
+    private boolean gameMatrix[][];
+    private boolean isFull;
 
     private int gameScreenWidth;
     private int gameScreenHeight;
@@ -49,9 +47,10 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
     public GameFrame() {
         Drawing.setGameFrame(this);
         initComponents();
+        controller = new GameController(this); /*Controlador para o jogo atual*/
 
-        /*GameFrame atual passa a "ouvir" o teclado*/
-        this.addKeyListener(this);
+        /*O objeto GameController controller passa a "ouvir" o teclado*/
+        this.addKeyListener(controller);
 
         gameScreenWidth = Consts.NUM_COLUMNS * Consts.CELL_SIZE + getInsets().left + getInsets().right;
         gameScreenHeight = Consts.NUM_LINES * Consts.CELL_SIZE + getInsets().top + getInsets().bottom;
@@ -62,11 +61,18 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         elemArray = new ArrayList<Element>();
 
         /*Cria e adiciona elementos no "elemArray" */
-        lolo = new Lolo("lolo.png");
-        lolo.setPosition(Consts.NUM_COLUMNS/2, Consts.NUM_LINES/2);
-        lolo.setTransposable(false);
-
-        this.addElement(lolo);
+        /* COMO ADICIONAR ELEMENTOS AO CENARIO:
+        * Exemplo do LoLo:
+        *
+        * Element lolo = new Lolo("lolo.png");
+        * lolo.setPosition(Consts.NUM_COLUMNS/2, Consts.NUM_LINES/2);
+        * lolo.setTransposable(false);
+        *
+        * this.addElement(lolo);
+        *
+        * Para que as peças não o atravesse, defina como "true" sua posição
+        * x e y em gameMatrix[x][y]
+        */
 
         gameMatrix = new boolean[Consts.NUM_LINES][Consts.NUM_COLUMNS];
         isFull = false;
@@ -100,9 +106,12 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
      * Método que finaliza o jogo e retorna para o Menu
      */
     private void finishGame() {
-        JOptionPane.showMessageDialog(this, "Game Over");
+
         this.setVisible(false);
+
         Main.MAIN_MENU.setVisible(true);
+        JOptionPane.showMessageDialog(Main.MAIN_MENU, "Game Over",
+                "Game Over", JOptionPane.WARNING_MESSAGE);
     }
 
     private void saveGame() {
@@ -135,8 +144,10 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
             for (int j = 0; j < Consts.NUM_COLUMNS; j++) {
                 try {
                     Image newImage = Toolkit.getDefaultToolkit().getImage(new java.io.File(".").getCanonicalPath() + Consts.IMG_PATH + "bricks.png");
-                    g2.drawImage(newImage,
-                            j * Consts.CELL_SIZE, i * Consts.CELL_SIZE, Consts.CELL_SIZE, Consts.CELL_SIZE, null);
+                    g2.drawImage(newImage, j * Consts.CELL_SIZE,
+                                           i * Consts.CELL_SIZE,
+                                              Consts.CELL_SIZE,
+                                              Consts.CELL_SIZE, null);
 
                 } catch (IOException ex) {
                     Logger.getLogger(GameFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -157,40 +168,24 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
 
         /*------------CONDICIONAIS IMPORTANTES----------------------
          *--------------------------------------------------------------------
-         * 1º Verifica se a peça tocou em algo e se já deu o TIME_FIRE
+         * 1º Verifica se a peça tocou em algo e se já deu o "TIME_FIRE"
          * 2º Marca as posições onde a peça parou como ocupadas na "gameMatrix"
          * -------------------------------------------------------------------*/
-        Boundaries objBounds = currentTetrisObject.getObjectBoundaries();
         if (objLowerBoundsIsOccuped(currentTetrisObject) && currentTetrisObject.pieces[0].getContIntervals() == Square.TIMER_FIRE - 1) {
             currentTetrisObject.desactivatePieces();
             /*MARCA COMO OCUPADO ONDE A PEÇA CAIU*/
             occupSquares(currentTetrisObject);
-            playGame(); /*Lança uma nova peça*/
-        }
 
-//        /*---------------------------------------------------------
-//        * Verifica a todo momento se uma das extremidades não está tocando
-//        * uma parte ocupada da "gameMatrix"
-//        * ---------------------------------------------------------*/
-//        if (currentTetrisObject.isActive() && objBounds.highestX < Consts.NUM_LINES-2) {
-//
-//            /*Verificação se está tocando um objeto já colocado*/
-//            for (int i = objBounds.lowestY; i <= objBounds.highestY; i++) {
-//                if (gameMatrix[objBounds.highestX+1][i] == OCCUPED) {
-//                    occupSquares(currentTetrisObject);
-//                    currentTetrisObject.desactivatePieces();
-//                    playGame();
-//                }
-//            }
-//    }
-
-        /*---------------GAME OVER---------------*/
-        if (!currentTetrisObject.isActive()) {
-            /*---------------GAME OVER---------------*/
-            System.out.println("currentTetrisObject desativate");
-            if (objBounds.highestX < 3) {
+            /*Possível GAME_OVER*/
+            if (currentTetrisObject.getObjectBoundaries().highestX < 3) {
                 System.out.println("GAME OVER");
+                isFull = true;
+
                 finishGame();
+            }
+            /*Lança uma nova peça*/
+            else {
+                playGame();
             }
         }
     }
@@ -205,7 +200,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
      * @param obj um GameObject qualquer
      * @return true or false
      */
-    private boolean objLowerBoundsIsOccuped(GameObject obj) {
+    boolean objLowerBoundsIsOccuped(GameObject obj) {
         int x, y;
 
         for (Square s : obj.pieces) {
@@ -231,7 +226,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
      * @param obj um GameObject qualquer
      * @return true or false
      */
-    private boolean objLeftBoundsIsOccuped(GameObject obj) {
+    boolean objLeftBoundsIsOccuped(GameObject obj) {
         int x, y;
         for (Square s : obj.pieces) {
             x = s.getPos().getX();
@@ -258,7 +253,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
      * @param obj um GameObject qualquer
      * @return true or false
      */
-    private boolean objRightBoundsIsOccuped(GameObject obj) {
+    boolean objRightBoundsIsOccuped(GameObject obj) {
         int x, y;
         for (Square s : obj.pieces) {
             x = s.getPos().getX();
@@ -287,6 +282,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
 
     /**
      * Método que cria um TimerTask para dar constantes "repaint()" ao frame
+     * até que "isFull" seja verdadeiro
      */
     public void go() {
         TimerTask task = new TimerTask() {
@@ -298,54 +294,6 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         timer.schedule(task, 0, Consts.DELAY_SCREEN_UPDATE);
     }
 
-    /**
-     * Método "ouvinte" das teclas que são pressionadas no teclado
-     * @param e Evento de tecla
-     */
-    public void keyPressed(KeyEvent e) {
-        Boundaries objBounds = currentTetrisObject.getObjectBoundaries();
-
-        /* Para cada um dos 4 "Squares" que compõem a peça, faça o movimento
-         * requisitado (direita, esquerda ou pra baixo)
-         * SE e SOMENTE SE, não estiver nas extremidades ou, houver algo impedindo */
-
-        if (currentTetrisObject.isActive()) {
-
-            /*BAIXO*/
-            if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-
-                /*Se não está tocando em nada, desce*/
-                if (!objLowerBoundsIsOccuped(currentTetrisObject)) {
-                    for (Square s : currentTetrisObject.pieces)
-                        s.moveDown(); // Desce
-                }
-            }
-
-            /*ESQUERDA*/
-            else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-
-                /*Verifica se não está tocando nada a esquerda*/
-                if (!objLeftBoundsIsOccuped(currentTetrisObject)) {
-                    for (Square s : currentTetrisObject.pieces)
-                        s.moveLeft(); // Move para esquerda
-                }
-
-            }
-
-            /*DIREITA*/
-            else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-
-                /*Verifica se já não está tocando nada a direita*/
-                if (!objRightBoundsIsOccuped(currentTetrisObject)) {
-                    for (Square s : currentTetrisObject.pieces)
-                        s.moveRight(); // Move para direita
-                }
-
-            }
-        }
-
-        //repaint(); /*invoca o paint imediatamente, sem aguardar o refresh*/
-    }
 
     /*Provavelmente Trecho herdado do GUI Form do netbeans, onde foi originalmente implementado o frame*/
     /**
@@ -379,11 +327,5 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
 
-    @Override
-    public void keyReleased(KeyEvent e) {
-    }
 }
