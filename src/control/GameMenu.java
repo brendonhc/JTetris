@@ -44,6 +44,7 @@ public class GameMenu extends JFrame implements ActionListener {
      */
     GameMenu() {
         setTitle(Consts.GAME_NAME);
+        setResizable(false);
         add(GameMenu); // Este JPanel contém os outros componentes
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

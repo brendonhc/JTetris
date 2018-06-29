@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author Luiz Eduardo
  * Baseado em material do Prof. Jose Fernando Junior
  */
-public class Lolo extends Element  implements Serializable{
+public class Lolo extends Element implements Serializable{
     
     public Lolo(String imageName) {
         super(imageName);

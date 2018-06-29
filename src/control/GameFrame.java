@@ -35,6 +35,10 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
     private int gameScreenWidth;
     private int gameScreenHeight;
 
+
+    /**
+     * Inicializa uma tela de jogo com seus elementos e obstáculos
+     */
     public GameFrame() {
         Drawing.setGameFrame(this);
         initComponents();
@@ -46,14 +50,14 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         gameScreenHeight = Consts.NUM_LINES * Consts.CELL_SIZE + getInsets().top + getInsets().bottom;
 
         /*Cria a janela do tamanho do tabuleiro + insets (bordas) da janela*/
-        this.setSize(gameScreenWidth + 200,
-                gameScreenHeight);
+        this.setSize(gameScreenWidth + 200, gameScreenHeight);
 
         elemArray = new ArrayList<Element>();
 
-        /*Cria e adiciona elementos*/
+        /*Cria e adiciona elementos no "elemArray" */
         lolo = new Lolo("lolo.png");
-        lolo.setPosition(0, 0);
+        lolo.setPosition(Consts.NUM_COLUMNS/2, Consts.NUM_LINES/2);
+        lolo.setTransposable(false);
         this.addElement(lolo);
 
         activeTetrisObject = new TetrisObject();
@@ -108,9 +112,11 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
             activeTetrisObject.deactivatePieces();
     }
 
+    /**
+     * Método que cria um TimerTask para dar constantes "repaint()" ao frame
+     */
     public void go() {
         TimerTask task = new TimerTask() {
-
             public void run() {
                 repaint();
             }
@@ -119,9 +125,16 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         timer.schedule(task, 0, Consts.DELAY_SCREEN_UPDATE);
     }
 
+    /**
+     * Método "ouvinte" das teclas que são pressionadas no teclado
+     * @param e Evento de tecla
+     */
     public void keyPressed(KeyEvent e) {
         Boundaries objBoundaries = activeTetrisObject.getObjectBoundaries();
-        for(int i = 0; i < 4 && activeTetrisObject.isActive; i++) {
+
+        /* Para cada um dos 4 "Squares" que compõem a peça, faça o movimento
+         * requisitado (direita, esquerda ou pra baixo) */
+        for (int i = 0; i < 4 && activeTetrisObject.isActive; i++) {
             if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 
                 if (objBoundaries.highestX < Consts.NUM_LINES - 1)
@@ -139,6 +152,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         //repaint(); /*invoca o paint imediatamente, sem aguardar o refresh*/
     }
 
+    /*Provavelmente Trecho herdado do GUI Form do netbeans, onde foi originalmente implementado o frame*/
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -149,7 +163,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("SCC0604 - Pacman");
+        setTitle(Consts.GAME_NAME);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setLocation(new java.awt.Point(20, 20));
         setResizable(false);
