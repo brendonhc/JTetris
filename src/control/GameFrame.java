@@ -36,6 +36,9 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
     private static boolean gameMatrix[][];
     private static boolean isFull;
 
+    private static final boolean FREE = false;
+    private static final boolean OCCUPED = true;
+
     private int gameScreenWidth;
     private int gameScreenHeight;
 
@@ -140,11 +143,37 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
             getBufferStrategy().show();
         }
 
-        /*Verifica se a peça chegou ao chão e se já deu o tempo de movimento no mesmo*/
+        /*------------CONDICIONAIS IMPORTANTES----------------------
+        *--------------------------------------------------------------------
+        * 1º Verifica se a peça chegou ao chão e se já deu o TIME_FIRE
+        * 2º Marca as posições onde a peça parou como ocupadas na "gameMatrix"
+        * -------------------------------------------------------------------*/
         if (currentTetrisObject.getObjectBoundaries().highestX == Consts.NUM_LINES - 1 && currentTetrisObject.pieces[0].getContIntervals() == Square.TIMER_FIRE - 1) {
             currentTetrisObject.deactivatePieces();
-            System.out.println("Chegou no FIM");
+            /*MARCA COMO OCUPADO ONDE A PEÇA CAIU*/
+            occupSquares(currentTetrisObject);
             playGame(); /*Lança uma nova peça*/
+        }
+
+        /*---------------------------------------------------------
+        * Verifica a todo momento se uma das extremidades não está tocando
+        * uma parte ocupada da "gameMatrix"
+        * ---------------------------------------------------------*/
+//        if () {
+//
+//        }
+
+        /*-----------------------------------------------------------------
+        * Verifica se a ultima peça colocada já está no maximo - GAME OVER
+        * -----------------------------------------------------------------*/
+//        if () {
+//
+//        }
+    }
+
+    private void occupSquares(TetrisObject obj) {
+        for(Square s : obj.pieces) {
+            gameMatrix[s.getPos().getX()][s.getPos().getY()] = OCCUPED;
         }
     }
 
