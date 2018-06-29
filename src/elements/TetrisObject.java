@@ -30,6 +30,9 @@ public class TetrisObject extends GameObject implements Serializable {
         System.out.println("Novo TetrisObject: " + type);
 
 
+        type = TetrisObjectType.I;
+
+
         /*Monta a peça de acordo com seu tipo: I, J, O, L, S, T, Z (TetrisObjectType)*/
         switch (type) {
             case I:

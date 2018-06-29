@@ -1,8 +1,12 @@
 package elements;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+import utils.Consts;
 import utils.Drawing;
 
+import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -58,7 +62,13 @@ public class Square extends Element implements Serializable {
      * desativando-o.
      */
     public void erase() {
-        imageIcon = null;
+        try {
+            imageIcon = new ImageIcon(new java.io.File(".").getCanonicalPath()
+                    + Consts.IMG_PATH + Consts.BG_NAME);
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
         setTransposable(true);
         desactivate();
     }
