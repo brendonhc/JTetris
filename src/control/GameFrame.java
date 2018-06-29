@@ -191,11 +191,48 @@ public class GameFrame extends javax.swing.JFrame {
 
                 finishGame();
             }
-            /*Lança uma nova peça*/
+            /*Verifica PONTUAÇÃO e Lança uma nova peça*/
             else {
+                if (hasFilledRow()) {
+                    int numberFilledsRows = freeFilledRows();
+                }
                 playGame();
             }
         }
+    }
+
+    /**
+     * Verifica se há alguma linha preenchida atualmente
+     * @return true, se sim, false, se não.
+     */
+    private boolean hasFilledRow() {
+        /*Para cada linha, verificar se todos seus quadrados estão preenchidos*/
+        for (int i = Consts.NUM_LINES-1; i >= 0 ; i--)
+            if (isFilledRow(i)) return true;
+
+        return false;
+    }
+
+    /**
+     * Verifica se uma linha está preenchida
+     * @param rowNumber número da linha a ser verificada
+     * @return true, se estiver, false, se não estiver.
+     */
+    private boolean isFilledRow(int rowNumber) {
+        for(boolean square : gameMatrix[rowNumber])
+            if (square == FREE) return false;
+
+        return true;
+    }
+
+    /**
+     * Libera as linhas preenchidas
+     * @return número de linhas liberadas
+     */
+    private int freeFilledRows() {
+        int freedRows = 0;
+
+        return freedRows;
     }
 
     /**
