@@ -66,7 +66,7 @@ public class GameMenu extends JFrame implements ActionListener {
     /**
      * Inicia um novo jogo a partir de uma nova instância de GameFrame
      */
-    private void startGame() {
+    private void startNewGame() {
         gameScreen = new GameFrame();
         startGame(gameScreen);
     }
@@ -108,7 +108,7 @@ public class GameMenu extends JFrame implements ActionListener {
 
         if (src == newGameButton) {
             setVisible(false);
-            startGame();
+            startNewGame();
         }
         else if (src == continueButton) {
             ObjectInputStream in = null;

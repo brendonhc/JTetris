@@ -13,13 +13,13 @@ public class Square extends Element implements Serializable {
     private int contIntervals;
     private Boolean isActive = true;
 
-    public static String LIGHT_BLUE = "lightBlueSquare.png";    // I
-    public static String DARK_BLUE = "darkBlueSquare.png";      // J
-    public static String ORANGE = "orangeSquare.png";           // L
-    public static String YELLOW = "yellowSquare.png";           // O
-    public static String GREEN = "greenSquare.png";             // S
-    public static String RED = "redSquare.png";                 // Z
-    public static String PURPLE = "purpleSquare.png";           // T
+    public static final String LIGHT_BLUE = "lightBlueSquare.png";    // I
+    public static final String DARK_BLUE = "darkBlueSquare.png";      // J
+    public static final String ORANGE = "orangeSquare.png";           // L
+    public static final String YELLOW = "yellowSquare.png";           // O
+    public static final String GREEN = "greenSquare.png";             // S
+    public static final String RED = "redSquare.png";                 // Z
+    public static final String PURPLE = "purpleSquare.png";           // T
 
     /**
      * Inicializa um objeto Square a partir de uma constante que indica a sua cor

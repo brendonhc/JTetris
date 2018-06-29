@@ -4,6 +4,7 @@ import elements.*;
 import utils.Consts;
 import utils.Drawing;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -11,7 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -96,6 +96,18 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         }
     }
 
+    /**
+     * Método que finaliza o jogo e retorna para o Menu
+     */
+    private void finishGame() {
+        JOptionPane.showMessageDialog(this, "Game Over");
+        this.setVisible(false);
+        Main.MAIN_MENU.setVisible(true);
+    }
+
+    private void saveGame() {
+
+    }
 
     private void addElement(Element elem) {
         elemArray.add(elem);
@@ -119,7 +131,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
            Trocar essa parte por uma estrutura mais bem organizada
            Utilizando a classe Stage
         */
-        for (int i = 0; i < Consts.NUM_LINES                                                                                                                            ; i++) {
+        for (int i = 0; i < Consts.NUM_LINES; i++) {
             for (int j = 0; j < Consts.NUM_COLUMNS; j++) {
                 try {
                     Image newImage = Toolkit.getDefaultToolkit().getImage(new java.io.File(".").getCanonicalPath() + Consts.IMG_PATH + "bricks.png");
@@ -144,42 +156,130 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         }
 
         /*------------CONDICIONAIS IMPORTANTES----------------------
-        *--------------------------------------------------------------------
-        * 1º Verifica se a peça chegou ao chão e se já deu o TIME_FIRE
-        * 2º Marca as posições onde a peça parou como ocupadas na "gameMatrix"
-        * -------------------------------------------------------------------*/
-        if (currentTetrisObject.getObjectBoundaries().highestX == Consts.NUM_LINES - 1 && currentTetrisObject.pieces[0].getContIntervals() == Square.TIMER_FIRE - 1) {
-            currentTetrisObject.deactivatePieces();
+         *--------------------------------------------------------------------
+         * 1º Verifica se a peça tocou em algo e se já deu o TIME_FIRE
+         * 2º Marca as posições onde a peça parou como ocupadas na "gameMatrix"
+         * -------------------------------------------------------------------*/
+        Boundaries objBounds = currentTetrisObject.getObjectBoundaries();
+        if (objLowerBoundsIsOccuped(currentTetrisObject) && currentTetrisObject.pieces[0].getContIntervals() == Square.TIMER_FIRE - 1) {
+            currentTetrisObject.desactivatePieces();
             /*MARCA COMO OCUPADO ONDE A PEÇA CAIU*/
             occupSquares(currentTetrisObject);
             playGame(); /*Lança uma nova peça*/
         }
 
-        /*---------------------------------------------------------
-        * Verifica a todo momento se uma das extremidades não está tocando
-        * uma parte ocupada da "gameMatrix"
-        * ---------------------------------------------------------*/
-        Boundaries obj = currentTetrisObject.getObjectBoundaries();
-        if (currentTetrisObject.isActive() && obj.highestX < Consts.NUM_LINES-2) {
+//        /*---------------------------------------------------------
+//        * Verifica a todo momento se uma das extremidades não está tocando
+//        * uma parte ocupada da "gameMatrix"
+//        * ---------------------------------------------------------*/
+//        if (currentTetrisObject.isActive() && objBounds.highestX < Consts.NUM_LINES-2) {
+//
+//            /*Verificação se está tocando um objeto já colocado*/
+//            for (int i = objBounds.lowestY; i <= objBounds.highestY; i++) {
+//                if (gameMatrix[objBounds.highestX+1][i] == OCCUPED) {
+//                    occupSquares(currentTetrisObject);
+//                    currentTetrisObject.desactivatePieces();
+//                    playGame();
+//                }
+//            }
+//    }
 
-            /*Verificação se está tocando um objeto já colocado*/
-            for (int i = obj.lowestY; i <= obj.highestY; i++) {
-                if (gameMatrix[obj.highestX+1][i] == OCCUPED) {
-                    occupSquares(currentTetrisObject);
-                    currentTetrisObject.deactivatePieces();
-                    playGame();
-                }
+        /*---------------GAME OVER---------------*/
+        if (!currentTetrisObject.isActive()) {
+            /*---------------GAME OVER---------------*/
+            System.out.println("currentTetrisObject desativate");
+            if (objBounds.highestX < 3) {
+                System.out.println("GAME OVER");
+                finishGame();
             }
         }
-        /*-----------------------------------------------------------------
-        * Verifica se a ultima peça colocada já está no maximo - GAME OVER
-        * -----------------------------------------------------------------*/
-//        else (!currentTetrisObject.isActive()) {
-//            //
-//        }
     }
 
-    private void occupSquares(TetrisObject obj) {
+    /**
+     * Método que verifica se o objeto está encostando em algo em baixo
+     * <p>
+     *     Para cada um dos Squares que compõem o objeto, é testado se há bloco
+     *     bloqueado na "gameMatrix" em baixo, se houver, é retornado
+     *     <em>true</em>, se não houver nada, <em>false</em>.
+     * </p>
+     * @param obj um GameObject qualquer
+     * @return true or false
+     */
+    private boolean objLowerBoundsIsOccuped(GameObject obj) {
+        int x, y;
+
+        for (Square s : obj.pieces) {
+            x = s.getPos().getX(); y = s.getPos().getY();
+
+            /*Se o Square atual está adjacente ao chão, true*/
+            if (x == Consts.NUM_LINES-1) return true;
+
+            /*Se está adjacente a qualquer outro obstaculo de "gameMatrix", true*/
+            else if (gameMatrix[x + 1][y] == OCCUPED) return true;
+
+        }
+        return false;
+    }
+
+    /**
+     * Método que verifica se o objeto está encostando em algo a esquerda
+     * <p>
+     *     Para cada um dos Squares que compõem o objeto, é testado se há bloco
+     *     bloqueado na "gameMatrix" a esquerda, se houver, é retornado
+     *     <em>true</em>, se não houver nada, <em>false</em>.
+     * </p>
+     * @param obj um GameObject qualquer
+     * @return true or false
+     */
+    private boolean objLeftBoundsIsOccuped(GameObject obj) {
+        int x, y;
+        for (Square s : obj.pieces) {
+            x = s.getPos().getX();
+            y = s.getPos().getY();
+
+            /*O Square atual não pode estar adjacente a parede esquerda*/
+            if (y == Consts.NUM_COLUMNS - 2) return true;
+
+            /*A posição adjacente esquerda não pode estar ocupada*/
+            else if (gameMatrix[x][y-1] == OCCUPED) return true;
+
+        }
+        return false;
+}
+
+
+    /**
+     * Método que verifica se o objeto está encostando em algo a direita
+     * <p>
+     *     Para cada um dos Squares que compõem o objeto, é testado se há bloco
+     *     bloqueado na "gameMatrix" a direita, se houver, é retornado
+     *     <em>true</em>, se não houver nada, <em>false</em>.
+     * </p>
+     * @param obj um GameObject qualquer
+     * @return true or false
+     */
+    private boolean objRightBoundsIsOccuped(GameObject obj) {
+        int x, y;
+        for (Square s : obj.pieces) {
+            x = s.getPos().getX();
+            y = s.getPos().getY();
+
+            /*O Square atual não pode estar adjacente a parede esquerda*/
+            if (y == Consts.NUM_COLUMNS + 2) return true;
+
+            /*A posição adjacente esquerda não pode estar ocupada*/
+            else if (gameMatrix[x][y+1] == OCCUPED) return true;
+
+        }
+        return false;
+    }
+
+    /**
+     * Método que marca as posições correspondentes aos Squares do objeto em
+     * questão como OCCUPED na "gameMatrix".
+     * @param obj objeto que será marcado
+     */
+    private void occupSquares(GameObject obj) {
         for(Square s : obj.pieces) {
             gameMatrix[s.getPos().getX()][s.getPos().getY()] = OCCUPED;
         }
@@ -211,46 +311,36 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
 
         if (currentTetrisObject.isActive()) {
 
-                        /*BAIXO*/
+            /*BAIXO*/
             if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                if (objBounds.highestX < Consts.NUM_LINES - 1) {
-                    /*Verifica se já não está rente com o chão*/
-                    if (objBounds.highestX < Consts.NUM_LINES - 2) {
-                        for (int j = objBounds.lowestY; j <= objBounds.highestY; j++) {
-                            if (gameMatrix[objBounds.highestX + 1][j] == OCCUPED) {
-                                return; // Impede o movimento pra baixo
-                            }
-                        }
-                    }
+
+                /*Se não está tocando em nada, desce*/
+                if (!objLowerBoundsIsOccuped(currentTetrisObject)) {
                     for (Square s : currentTetrisObject.pieces)
                         s.moveDown(); // Desce
                 }
+            }
 
-            }            /*ESQUERDA*/
-            else if (e.getKeyCode() == KeyEvent.VK_LEFT && objBounds.lowestY > 0) {
-                /*Verifica se já não está rente com a parede esquerda*/
-                if (objBounds.lowestY > 1) {
-                    for (Square s : currentTetrisObject.pieces) {
-                        if (gameMatrix[s.getPos().getX()][s.getPos().getY() - 1] == OCCUPED) {
-                            return; // Ignora o movimento para esquerda
-                        }
-                    }
-                }
-                for (Square s : currentTetrisObject.pieces)
-                    s.moveLeft(); // Move para esquerda
+            /*ESQUERDA*/
+            else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 
-            }             /*DIREITA*/
-            else if (e.getKeyCode() == KeyEvent.VK_RIGHT && objBounds.highestY < Consts.NUM_COLUMNS - 1) {
-                /*Verifica se já não está rente com a parede direita*/
-                if (objBounds.highestY < Consts.NUM_COLUMNS-2) {
-                    for (Square s : currentTetrisObject.pieces) {
-                        if (gameMatrix[s.getPos().getX()][s.getPos().getY() + 1] == OCCUPED) {
-                            return; // Ignora o movimento para direita
-                        }
-                    }
+                /*Verifica se não está tocando nada a esquerda*/
+                if (!objLeftBoundsIsOccuped(currentTetrisObject)) {
+                    for (Square s : currentTetrisObject.pieces)
+                        s.moveLeft(); // Move para esquerda
                 }
-                for (Square s : currentTetrisObject.pieces)
-                    s.moveRight(); // Move para direita
+
+            }
+
+            /*DIREITA*/
+            else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+
+                /*Verifica se já não está tocando nada a direita*/
+                if (!objRightBoundsIsOccuped(currentTetrisObject)) {
+                    for (Square s : currentTetrisObject.pieces)
+                        s.moveRight(); // Move para direita
+                }
+
             }
         }
 

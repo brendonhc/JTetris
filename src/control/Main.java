@@ -8,6 +8,7 @@ package control;
  * Baseado em material do Prof. Luiz Eduardo
  */
 public class Main {
+    public static final GameMenu MAIN_MENU = new GameMenu();
 
     /**
      * Método estático main que inicia o game com seu menu.
@@ -16,8 +17,7 @@ public class Main {
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                GameMenu mainMenu = new GameMenu();
-                mainMenu.setVisible(true);
+                MAIN_MENU.setVisible(true);
             }
         });
     }

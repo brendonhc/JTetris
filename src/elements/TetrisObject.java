@@ -12,17 +12,17 @@ import java.util.Random;
  *
  * @author Sergio Piza, Brendon Hudson
  */
-public class TetrisObject implements Serializable {
+public class TetrisObject extends GameObject implements Serializable {
     private TetrisObjectType type;
-    private boolean isActive = true;
-    public Square[] pieces = new Square[4];
-
 
     /**
      * Inicializa uma nova peça aleatória
      */
     public TetrisObject() {
         type = TetrisObjectType.values()[new Random().nextInt(TetrisObjectType.values().length)];
+        squaresNumber = 4;
+        pieces = new Square[squaresNumber];
+        isActive = true;
 
         // Para debug
         System.out.println("Novo TetrisObject: " + type);
@@ -87,33 +87,6 @@ public class TetrisObject implements Serializable {
 
     public TetrisObjectType getType() {
         return type;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public Boundaries getObjectBoundaries() {
-        Boundaries b = new Boundaries();
-        b.highestX = pieces[0].pos.getX();
-        b.lowestY = pieces[0].pos.getY();
-        b.highestY = pieces[0].pos.getY();
-        for (int i = 1; i < 4; i++) {
-            if (pieces[i].pos.getX() > b.highestX) b.highestX = pieces[i].pos.getX();
-            if (pieces[i].pos.getY() < b.lowestY) b.lowestY = pieces[i].pos.getY();
-            if (pieces[i].pos.getY() > b.highestY) b.highestY = pieces[i].pos.getY();
-        }
-
-        //System.out.println(b.toString());
-
-        return b;
-    }
-
-    public void deactivatePieces() {
-        if (isActive) {
-            this.isActive = false;
-            for (int i = 0; i < 4; i++) pieces[i].deactivate();
-        }
     }
 
 }
