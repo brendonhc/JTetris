@@ -22,7 +22,6 @@ public class TetrisObject extends GameObject implements Serializable {
     public TetrisObject() {
         type = TetrisObjectType.values()[new Random().nextInt(TetrisObjectType.values().length)];
         squaresNumber = 4;
-        type = TetrisObjectType.I;
         pieces = new Square[squaresNumber];
         isActive = true;
         rotatePosition = 0;
