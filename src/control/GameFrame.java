@@ -175,8 +175,10 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
 
                 if (objBoundaries.highestX < Consts.NUM_LINES - 1)
                     currentTetrisObject.pieces[i].moveDown();
-                else
-                    currentTetrisObject.deactivatePieces();
+//                else {
+//                    currentTetrisObject.deactivatePieces();
+//                    playGame(); // Lança uma nova peça
+//                }
 
             } else if (e.getKeyCode() == KeyEvent.VK_LEFT && objBoundaries.lowestY > 0) {
                 currentTetrisObject.pieces[i].moveLeft();
