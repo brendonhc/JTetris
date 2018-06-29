@@ -34,7 +34,7 @@ public abstract class GameObject {
     public void desactivatePieces() {
         if (isActive()) {
             isActive = false;
-            for (int i = 0; i < squaresNumber; i++) pieces[i].deactivate();
+            for (int i = 0; i < squaresNumber; i++) pieces[i].desactivate();
         }
     }
 }

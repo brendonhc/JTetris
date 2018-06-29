@@ -194,6 +194,7 @@ public class GameFrame extends javax.swing.JFrame {
 
             /*VERIFICA SE HOUVE PONTUAÇÃO*/
             if (hasFilledRow()) {
+                System.out.println("HOUVE PONTUAÇÃO!");
                 int multPontuation = freeFilledRows();
 
             }
@@ -254,8 +255,17 @@ public class GameFrame extends javax.swing.JFrame {
         int freedRows = 0;
         /*Para cada linha preenchida, libero seus squares para descerem*/
         for (int i = Consts.NUM_LINES-1; i >= 0; i--) {
-            if (isFilledRow(i)) {
+
+            /*Enquanto ela estiver preenchida*/
+            while (isFilledRow(i)) {
                 freedRows++;
+
+                /*1. Removo seus elementos*/
+                for (Square s : gameSquares[i]) {
+                    s.erase();
+                }
+
+                /*2. Deço todas os Squares que estavam acima*/
 
             }
         }

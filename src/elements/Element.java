@@ -39,7 +39,8 @@ public abstract class Element implements Serializable{
             System.out.println(ex.getMessage());
         }
     }
-    
+
+
     public boolean overlap(Element elem) {
         double xDist = Math.abs(elem.pos.getX() - this.pos.getX());
         double yDist = Math.abs(elem.pos.getY() - this.pos.getY());

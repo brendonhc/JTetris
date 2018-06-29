@@ -35,7 +35,7 @@ public class Square extends Element implements Serializable {
         return this.contIntervals;
     }
 
-    public void deactivate() {
+    public void desactivate() {
         this.isActive = false;
     }
 
@@ -51,6 +51,15 @@ public class Square extends Element implements Serializable {
                 //Drawing.getGameScreen().addElement(f);
             }
         }
+    }
 
+    /**
+     * Método da classe Square que "apaga" o quadrado, tirando seu "imageIcon" e
+     * desativando-o.
+     */
+    public void erase() {
+        imageIcon = null;
+        setTransposable(true);
+        desactivate();
     }
 }
