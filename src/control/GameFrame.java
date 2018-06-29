@@ -36,7 +36,6 @@ public class GameFrame extends javax.swing.JFrame {
     private Pontuation points;
 
     protected TetrisObject currentTetrisObject;
-    private boolean[][] gameMatrix; // Para controlar posições OCCUPED ou FREE
     private Square[][] gameSquares;  // Cada quadrado do game
     private boolean isFull;
 
@@ -53,9 +52,7 @@ public class GameFrame extends javax.swing.JFrame {
         controller = new GameController(this); /*Controlador para o jogo atual*/
         points = new Pontuation(Consts.BASE_POINT_INC); /*Sistema de pontuação*/
 
-        /*Adiciono e removo aqui todos blocos do game (inicializados com null)*/
-        gameSquares = new Square[Consts.NUM_LINES][Consts.NUM_COLUMNS];
-        for (Square[] s : gameSquares) Arrays.fill(s, null);
+
 
         /*O objeto GameController controller passa a "ouvir" o teclado*/
         this.addKeyListener(controller);
@@ -69,7 +66,9 @@ public class GameFrame extends javax.swing.JFrame {
         elemArray = new ArrayList<Element>();
 
         /*Inicializa matriz de controle de blocos ocupados na tela do game*/
-        gameMatrix = new boolean[Consts.NUM_LINES][Consts.NUM_COLUMNS];
+        /*Adiciono e removo aqui todos blocos do game (inicializados com null)*/
+        gameSquares = new Square[Consts.NUM_LINES][Consts.NUM_COLUMNS];
+        for (Square[] s : gameSquares) Arrays.fill(s, null);
         isFull = false;
 
         /*Cria e adiciona elementos no "elemArray" */
@@ -82,8 +81,9 @@ public class GameFrame extends javax.swing.JFrame {
         *
         * this.addElement(lolo);
         *
-        * Para que as peças não o atravesse, defina como "true" sua posição
-        * x e y em gameMatrix[x][y]
+        * Para que as peças não o atravesse, adicione-o em gameSquare com
+        * addGameObjectSquare()
+        * x e y em gameSquare[x][y]
         */
 
         currentTetrisObject = null;
@@ -183,13 +183,12 @@ public class GameFrame extends javax.swing.JFrame {
         /*------------CONDICIONAIS IMPORTANTES----------------------
          *--------------------------------------------------------------------
          * 1º Verifica se a peça tocou em algo e se já deu o "TIME_FIRE"
-         * 2º Marca as posições onde a peça parou como ocupadas na "gameMatrix"
+         * 2º Ocupa a "gameSquares" com cada Square do GameObject (peça)
          * -------------------------------------------------------------------*/
         if (objLowerBoundsIsOccuped(currentTetrisObject) && currentTetrisObject.pieces[0].getContIntervals() == Square.TIMER_FIRE - 1) {
             currentTetrisObject.desactivatePieces();
 
             /*MARCA COMO OCUPADO ONDE A PEÇA CAIU e adiciona seus squares a "rowsSquares"*/
-            occupSquares(currentTetrisObject);
             addGameObjectSquares(currentTetrisObject);
 
             /*VERIFICA SE HOUVE PONTUAÇÃO*/
@@ -241,8 +240,8 @@ public class GameFrame extends javax.swing.JFrame {
      * @return true, se estiver, false, se não estiver.
      */
     private boolean isFilledRow(int rowNumber) {
-        for(boolean square : gameMatrix[rowNumber])
-            if (square == FREE) return false;
+        for(Square s : gameSquares[rowNumber])
+            if (s == null) return false;
 
         return true;
     }
@@ -265,7 +264,8 @@ public class GameFrame extends javax.swing.JFrame {
                     s.erase();
                 }
 
-                /*2. Deço todas os Squares que estavam acima*/
+                /*2. Desço todos os Squares que estavam acima*/
+
 
             }
         }
@@ -276,7 +276,7 @@ public class GameFrame extends javax.swing.JFrame {
      * Método que verifica se o objeto está encostando em algo em baixo
      * <p>
      *     Para cada um dos Squares que compõem o objeto, é testado se há bloco
-     *     bloqueado na "gameMatrix" em baixo, se houver, é retornado
+     *     bloqueado na "gameSquares" em baixo, se houver, é retornado
      *     <em>true</em>, se não houver nada, <em>false</em>.
      * </p>
      * @param obj um GameObject qualquer
@@ -291,8 +291,8 @@ public class GameFrame extends javax.swing.JFrame {
             /*Se o Square atual está adjacente ao chão, true*/
             if (x == Consts.NUM_LINES-1) return true;
 
-            /*Se está adjacente a qualquer outro obstaculo de "gameMatrix", true*/
-            else if (gameMatrix[x + 1][y] == OCCUPED) return true;
+            /*Se está adjacente a qualquer outro obstaculo de "gameSquares", true*/
+            else if (gameSquares[x + 1][y] != null) return true;
 
         }
         return false;
@@ -302,7 +302,7 @@ public class GameFrame extends javax.swing.JFrame {
      * Método que verifica se o objeto está encostando em algo a esquerda
      * <p>
      *     Para cada um dos Squares que compõem o objeto, é testado se há bloco
-     *     bloqueado na "gameMatrix" a esquerda, se houver, é retornado
+     *     bloqueado na "gameSquares" a esquerda, se houver, é retornado
      *     <em>true</em>, se não houver nada, <em>false</em>.
      * </p>
      * @param obj um GameObject qualquer
@@ -318,7 +318,7 @@ public class GameFrame extends javax.swing.JFrame {
             if (y == 0) return true;
 
             /*A posição adjacente esquerda não pode estar ocupada*/
-            else if (gameMatrix[x][y-1] == OCCUPED) return true;
+            else if (gameSquares[x][y-1] != null) return true;
 
         }
         return false;
@@ -328,7 +328,7 @@ public class GameFrame extends javax.swing.JFrame {
      * Método que verifica se o objeto está encostando em algo a direita
      * <p>
      *     Para cada um dos Squares que compõem o objeto, é testado se há bloco
-     *     bloqueado na "gameMatrix" a direita, se houver, é retornado
+     *     bloqueado na "gameSquares" a direita, se houver, é retornado
      *     <em>true</em>, se não houver nada, <em>false</em>.
      * </p>
      * @param obj um GameObject qualquer
@@ -344,21 +344,10 @@ public class GameFrame extends javax.swing.JFrame {
             if (y == Consts.NUM_COLUMNS - 1) return true;
 
             /*A posição adjacente esquerda não pode estar ocupada*/
-            else if (gameMatrix[x][y+1] == OCCUPED) return true;
+            else if (gameSquares[x][y+1] != null) return true;
 
         }
         return false;
-    }
-
-    /**
-     * Método que marca as posições correspondentes aos Squares do objeto em
-     * questão como OCCUPED na "gameMatrix".
-     * @param obj objeto que será marcado
-     */
-    private void occupSquares(GameObject obj) {
-        for(Square s : obj.pieces) {
-            gameMatrix[s.getPos().getX()][s.getPos().getY()] = OCCUPED;
-        }
     }
 
     /**
