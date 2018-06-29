@@ -203,51 +203,55 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
      * @param e Evento de tecla
      */
     public void keyPressed(KeyEvent e) {
-        Boundaries objBoundaries = currentTetrisObject.getObjectBoundaries();
+        Boundaries objBounds = currentTetrisObject.getObjectBoundaries();
 
         /* Para cada um dos 4 "Squares" que compõem a peça, faça o movimento
-         * requisitado (direita, esquerda ou pra baixo) */
+         * requisitado (direita, esquerda ou pra baixo)
+         * SE e SOMENTE SE, não estiver nas extremidades ou, houver algo impedindo */
 
-        for (int i = 0; i < 4 && currentTetrisObject.isActive(); i++) {
+        if (currentTetrisObject.isActive()) {
 
                         /*BAIXO*/
             if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                if (objBoundaries.highestX < Consts.NUM_LINES - 1) {
-
-                    if (objBoundaries.highestX < Consts.NUM_LINES - 2) {
-                        for (int j = objBoundaries.lowestY; j <= objBoundaries.highestY; j++) {
-                            if (gameMatrix[objBoundaries.highestX + 1][i] == OCCUPED) {
-                                break; // Impede o movimento pra baixo
+                if (objBounds.highestX < Consts.NUM_LINES - 1) {
+                    /*Verifica se já não está rente com o chão*/
+                    if (objBounds.highestX < Consts.NUM_LINES - 2) {
+                        for (int j = objBounds.lowestY; j <= objBounds.highestY; j++) {
+                            if (gameMatrix[objBounds.highestX + 1][j] == OCCUPED) {
+                                return; // Impede o movimento pra baixo
                             }
                         }
                     }
-                    currentTetrisObject.pieces[i].moveDown();
+                    for (Square s : currentTetrisObject.pieces)
+                        s.moveDown(); // Desce
                 }
 
             }            /*ESQUERDA*/
-            else if (e.getKeyCode() == KeyEvent.VK_LEFT && objBoundaries.lowestY > 0) {
-                /*Verifica se não é canto primeiro*/
-                if (objBoundaries.lowestY > 1) {
+            else if (e.getKeyCode() == KeyEvent.VK_LEFT && objBounds.lowestY > 0) {
+                /*Verifica se já não está rente com a parede esquerda*/
+                if (objBounds.lowestY > 1) {
                     for (Square s : currentTetrisObject.pieces) {
                         if (gameMatrix[s.getPos().getX()][s.getPos().getY() - 1] == OCCUPED) {
-                            break; // Ignora o movimento para esquerda
+                            return; // Ignora o movimento para esquerda
                         }
                     }
                 }
-                currentTetrisObject.pieces[i].moveLeft(); // Move para esquerda
+                for (Square s : currentTetrisObject.pieces)
+                    s.moveLeft(); // Move para esquerda
 
             }             /*DIREITA*/
-            else if (e.getKeyCode() == KeyEvent.VK_RIGHT && objBoundaries.highestY < Consts.NUM_COLUMNS - 1) {
-                /*Verifica se não é canto primeiro*/
-                if (objBoundaries.highestY < Consts.NUM_COLUMNS-2) {
+            else if (e.getKeyCode() == KeyEvent.VK_RIGHT && objBounds.highestY < Consts.NUM_COLUMNS - 1) {
+                /*Verifica se já não está rente com a parede direita*/
+                if (objBounds.highestY < Consts.NUM_COLUMNS-2) {
                     for (Square s : currentTetrisObject.pieces) {
                         if (gameMatrix[s.getPos().getX()][s.getPos().getY() + 1] == OCCUPED) {
-                            break; // Ignora o movimento para direita
+                            return; // Ignora o movimento para direita
                         }
                     }
                 }
-                currentTetrisObject.pieces[i].moveRight(); // Move para direita
-            } else break;
+                for (Square s : currentTetrisObject.pieces)
+                    s.moveRight(); // Move para direita
+            }
         }
 
         //repaint(); /*invoca o paint imediatamente, sem aguardar o refresh*/
