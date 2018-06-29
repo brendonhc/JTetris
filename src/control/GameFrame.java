@@ -32,6 +32,7 @@ public class GameFrame extends javax.swing.JFrame {
 
     private ArrayList<Element> elemArray;
     private GameController controller;
+    private Pontuation points;
 
     protected TetrisObject currentTetrisObject;
     private boolean gameMatrix[][];
@@ -48,6 +49,7 @@ public class GameFrame extends javax.swing.JFrame {
         Drawing.setGameFrame(this);
         initComponents();
         controller = new GameController(this); /*Controlador para o jogo atual*/
+        points = new Pontuation(Consts.BASE_POINT_INC); /*Sistema de pontuação*/
 
         /*O objeto GameController controller passa a "ouvir" o teclado*/
         this.addKeyListener(controller);
@@ -59,6 +61,10 @@ public class GameFrame extends javax.swing.JFrame {
         this.setSize(gameScreenWidth + 200, gameScreenHeight);
 
         elemArray = new ArrayList<Element>();
+
+        /*Inicializa matriz de controle de blocos ocupados na tela do game*/
+        gameMatrix = new boolean[Consts.NUM_LINES][Consts.NUM_COLUMNS];
+        isFull = false;
 
         /*Cria e adiciona elementos no "elemArray" */
         /* COMO ADICIONAR ELEMENTOS AO CENARIO:
@@ -74,10 +80,9 @@ public class GameFrame extends javax.swing.JFrame {
         * x e y em gameMatrix[x][y]
         */
 
-        gameMatrix = new boolean[Consts.NUM_LINES][Consts.NUM_COLUMNS];
-        isFull = false;
         currentTetrisObject = null;
 
+        /*Lança a primeira peça*/
         playGame();
     }
 

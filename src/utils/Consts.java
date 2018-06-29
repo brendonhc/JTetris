@@ -12,6 +12,7 @@ public class Consts {
     public static final int CELL_SIZE = 30;
     public static final int NUM_COLUMNS = 10;
     public static final int NUM_LINES = 18;
+    public static final int BASE_POINT_INC = 50;
 
     public static final String GAME_NAME = "TetriZika";
     public static final String IMG_PATH = File.separator + "imgs" + File.separator;
