@@ -262,6 +262,7 @@ public class GameFrame extends javax.swing.JFrame {
                 /*1. Removo seus elementos*/
                 for (Square s : gameSquares[i]) {
                     s.erase();
+                    gameSquares[s.getPos().getX()][s.getPos().getY()] = null;
                 }
 
                 /*2. Desço todos os Squares que estavam acima*/
