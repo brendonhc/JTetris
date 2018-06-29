@@ -5,13 +5,27 @@ import utils.Drawing;
 import java.awt.*;
 import java.io.Serializable;
 
+/**
+ * Classe que representa um quadrado individual da tela do game
+ */
 public class Square extends Element implements Serializable {
     public static final int TIMER_FIRE = 40;
     private int contIntervals;
     private Boolean isActive = true;
 
-    public Square() {
-        super("caveira.png");
+    public static String LIGHT_BLUE = "lightBlueSquare.png";    // I
+    public static String DARK_BLUE = "darkBlueSquare.png";      // J
+    public static String ORANGE = "orangeSquare.png";           // L
+    public static String YELLOW = "yellowSquare.png";           // O
+    public static String GREEN = "greenSquare.png";             // S
+    public static String RED = "redSquare.png";                 // Z
+    public static String PURPLE = "purpleSquare.png";           // T
+
+    /**
+     * Inicializa um objeto Square a partir de uma constante que indica a sua cor
+     */
+    public Square(String constColor) {
+        super(constColor);
         this.isTransposable = false;
         this.contIntervals = 0;
 

@@ -27,15 +27,16 @@ public class TetrisObject implements Serializable {
         // Para debug
         System.out.println("Novo TetrisObject: " + type);
 
-        for (int i = 0; i < 4; i++) pieces[i] = new Square();
 
         /*Monta a peça de acordo com seu tipo: I, J, O, L, S, T, Z (TetrisObjectType)*/
         switch (type) {
             case I:
+                for (int i = 0; i < 4; i++) pieces[i] = new Square(Square.LIGHT_BLUE);
                 for (int i = 0; i < 4; i++) pieces[i].setPosition(i, Consts.NUM_COLUMNS/2);
                 break;
 
             case J:
+                for (int i = 0; i < 4; i++) pieces[i] = new Square(Square.DARK_BLUE);
                 pieces[0].setPosition(0, Consts.NUM_COLUMNS/2);
                 pieces[1].setPosition(1, Consts.NUM_COLUMNS/2);
                 pieces[2].setPosition(1, Consts.NUM_COLUMNS/2 + 1);
@@ -43,6 +44,7 @@ public class TetrisObject implements Serializable {
                 break;
 
             case O:
+                for (int i = 0; i < 4; i++) pieces[i] = new Square(Square.YELLOW);
                 pieces[0].setPosition(0, Consts.NUM_COLUMNS/2);
                 pieces[1].setPosition(1, Consts.NUM_COLUMNS/2);
                 pieces[2].setPosition(0, Consts.NUM_COLUMNS/2 + 1);
@@ -50,6 +52,7 @@ public class TetrisObject implements Serializable {
                 break;
 
             case L:
+                for (int i = 0; i < 4; i++) pieces[i] = new Square(Square.ORANGE);
                 pieces[0].setPosition(0, Consts.NUM_COLUMNS/2 + 2);
                 pieces[1].setPosition(1, Consts.NUM_COLUMNS/2);
                 pieces[2].setPosition(1, Consts.NUM_COLUMNS/2 + 1);
@@ -57,6 +60,7 @@ public class TetrisObject implements Serializable {
                 break;
 
             case S:
+                for (int i = 0; i < 4; i++) pieces[i] = new Square(Square.GREEN);
                 pieces[0].setPosition(0, Consts.NUM_COLUMNS/2);
                 pieces[1].setPosition(1, Consts.NUM_COLUMNS/2);
                 pieces[2].setPosition(1, Consts.NUM_COLUMNS/2 - 1);
@@ -64,6 +68,7 @@ public class TetrisObject implements Serializable {
                 break;
 
             case T:
+                for (int i = 0; i < 4; i++) pieces[i] = new Square(Square.PURPLE);
                 pieces[0].setPosition(0, Consts.NUM_COLUMNS/2);
                 pieces[1].setPosition(1, Consts.NUM_COLUMNS/2);
                 pieces[2].setPosition(1, Consts.NUM_COLUMNS/2 - 1);
@@ -71,6 +76,7 @@ public class TetrisObject implements Serializable {
                 break;
 
             case Z:
+                for (int i = 0; i < 4; i++) pieces[i] = new Square(Square.RED);
                 pieces[0].setPosition(0, Consts.NUM_COLUMNS/2);
                 pieces[1].setPosition(1, Consts.NUM_COLUMNS/2);
                 pieces[2].setPosition(0, Consts.NUM_COLUMNS/2 - 1);
@@ -90,7 +96,7 @@ public class TetrisObject implements Serializable {
             if (pieces[i].pos.getY() > b.highestY) b.highestY = pieces[i].pos.getY();
         }
 
-        //System.out.println(b.toString());
+        System.out.println(b.toString());
 
         return b;
     }

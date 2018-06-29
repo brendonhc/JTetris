@@ -58,6 +58,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         lolo = new Lolo("lolo.png");
         lolo.setPosition(Consts.NUM_COLUMNS/2, Consts.NUM_LINES/2);
         lolo.setTransposable(false);
+
         this.addElement(lolo);
 
         activeTetrisObject = new TetrisObject();
