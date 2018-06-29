@@ -69,7 +69,7 @@ public class Square extends Element implements Serializable {
         catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        setTransposable(true);
+        //setTransposable(true);
         desactivate();
     }
 }
