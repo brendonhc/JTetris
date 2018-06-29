@@ -8,7 +8,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Timer;
@@ -92,6 +95,29 @@ public class GameFrame extends javax.swing.JFrame {
         playGame();
     }
 
+	/**
+	 * Inicializa um jogo salvo em disco.
+	 * @param gameFile o Stream que representa o arquivo em disco
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public GameFrame(ObjectInputStream gameFile) throws IOException, ClassNotFoundException {
+		Drawing.setGameFrame(this);
+		initComponents();
+		this.elemArray = (ArrayList<Element>) gameFile.readObject();
+		this.points = (Pontuation) gameFile.readObject();
+		//this.currentTetrisObject = (TetrisObject) gameFile.readObject();
+		this.gameSquares = (Square[][]) gameFile.readObject();
+		this.isFull = gameFile.readBoolean();
+		this.gameScreenWidth = gameFile.readInt();
+		this.gameScreenHeight = gameFile.readInt();
+		this.controller = new GameController(this);
+		this.addKeyListener(controller);
+		this.setSize(gameScreenWidth + 200, gameScreenHeight);
+		this.currentTetrisObject = null;
+		playGame();
+	}
+
     /**
      * Método que inicia a lógica do game
      *
@@ -104,7 +130,7 @@ public class GameFrame extends javax.swing.JFrame {
 
         /*Gera aleatóriamente peças do game até chegar ao topo*/
         if (!isFull) {
-            currentTetrisObject = new TetrisObject(this);
+	        currentTetrisObject = new TetrisObject(this);
 
             /*Adiciona os blocos da peça ao array de elementos do frame*/
             for (int i = 0; i < 4; i++) {
@@ -117,19 +143,45 @@ public class GameFrame extends javax.swing.JFrame {
      * Método que finaliza o jogo e retorna para o Menu
      */
     private void finishGame() {
-
         this.setVisible(false);
-
         Main.MAIN_MENU.setVisible(true);
-        JOptionPane.showMessageDialog(Main.MAIN_MENU, "Game Over",
-                "Game Over", JOptionPane.WARNING_MESSAGE);
     }
 
     /**
      * Método que serializa o GameFrame atual, salvando o jogo
      */
     void saveGame() {
-
+	    JFileChooser fileSaverDialog;
+	    fileSaverDialog = new JFileChooser();
+	    fileSaverDialog.setDialogTitle("Salvar jogo...");
+	    fileSaverDialog.setApproveButtonText("Salvar");
+	    fileSaverDialog.setDialogType(JFileChooser.SAVE_DIALOG);
+	    fileSaverDialog.setFileSelectionMode(JFileChooser.FILES_ONLY);
+	    fileSaverDialog.setMultiSelectionEnabled(false);
+	    if(fileSaverDialog.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+		    ObjectOutputStream saveStream = null;
+		    try {
+			    //currentTetrisObject = null;
+			    for (int i = 0; i < 4; i++) {
+				    this.removeElement(currentTetrisObject.pieces[i]);
+			    }
+			    saveStream = new ObjectOutputStream(new FileOutputStream(fileSaverDialog.getSelectedFile()));
+			    saveStream.writeObject(elemArray);
+			    saveStream.writeObject(points);
+			    //saveStream.writeObject(currentTetrisObject);
+			    saveStream.writeObject(gameSquares);
+			    saveStream.writeBoolean(isFull);
+			    saveStream.writeInt(gameScreenWidth);
+			    saveStream.writeInt(gameScreenHeight);
+			    saveStream.close();
+			    finishGame();
+			    JOptionPane.showMessageDialog(Main.MAIN_MENU, "Jogo salvo",
+					    "Salvo com sucesso", JOptionPane.WARNING_MESSAGE);
+		    } catch(IOException e) {
+			    JOptionPane.showMessageDialog(this, e.getMessage(),
+					    "Problema no salvamento", JOptionPane.WARNING_MESSAGE);
+		    }
+	    }
     }
 
     private void addElement(Element elem) {
@@ -174,12 +226,6 @@ public class GameFrame extends javax.swing.JFrame {
         this.controller.processAllElements(elemArray);
         this.setTitle(currentTetrisObject.getType().toString());
 
-        g.dispose();
-        g2.dispose();
-        if (!getBufferStrategy().contentsLost()) {
-            getBufferStrategy().show();
-        }
-
         /*------------CONDICIONAIS IMPORTANTES----------------------
          *--------------------------------------------------------------------
          * 1º Verifica se a peça tocou em algo e se já deu o "TIME_FIRE"
@@ -194,9 +240,8 @@ public class GameFrame extends javax.swing.JFrame {
             /*VERIFICA SE HOUVE PONTUAÇÃO*/
             if (hasFilledRow()) {
                 int multPontuation = freeFilledRows();
-                points.gain(multPontuation);
-                System.out.println("Pontuação: " + points.getPoints());
-                //repaint();
+	            points.gain(multPontuation);
+	            System.out.println("Pontuação: " + points.getPoints());
             }
             /*Possível GAME_OVER*/
             else if (currentTetrisObject.getObjectBoundaries().highestX < 3) {
@@ -204,12 +249,20 @@ public class GameFrame extends javax.swing.JFrame {
                 isFull = true;
 
                 finishGame();
+	            JOptionPane.showMessageDialog(Main.MAIN_MENU, "Game Over",
+			            "Game Over", JOptionPane.WARNING_MESSAGE);
             }
 
             /*Lança uma NOVA PEÇA*/
             playGame();
 
         }
+	    g2.drawString("Pontuação: " + points.getPoints(), 0, 0);
+	    g.dispose();
+	    g2.dispose();
+	    if (!getBufferStrategy().contentsLost()) {
+		    getBufferStrategy().show();
+	    }
     }
 
     /**
@@ -263,14 +316,20 @@ public class GameFrame extends javax.swing.JFrame {
                 /*1. Removo seus elementos*/
                 for (Square s : gameSquares[i]) {
                     gameSquares[s.getPos().getX()][s.getPos().getY()] = null;
-                    s.erase();
+	                s.erase();
                 }
+
                 /*2. Desço todos os Squares que estavam acima*/
-                for (int row = i; row > 0; row--) {
-                    /*Trás o que tem em cima pra baixo*/
-                    for (int col = 0; col < Consts.NUM_COLUMNS; col++)
-                        gameSquares[row][col] = gameSquares[row-1][col];
-                }
+	            for(int j = i; j > 0; j--) {
+		            gameSquares[j] = gameSquares[j - 1];
+		            for(int k = 0; k < Consts.NUM_COLUMNS; k++)
+			            if(gameSquares[j][k] != null)
+				            gameSquares[j][k].setPosition(gameSquares[j][k].getPos().getX() + 1, gameSquares[j][k].getPos().getY());
+	            }
+	            for(int j = 0; j < Consts.NUM_COLUMNS; j++)
+		            gameSquares[0][j] = null;
+
+
             }
         }
         return freedRows;

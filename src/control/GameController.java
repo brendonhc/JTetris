@@ -114,7 +114,7 @@ public class GameController implements KeyListener {
             }
 
             /*SALVAMENTO*/
-            else if (e.getKeyCode() == KeyEvent.VK_F1) { // A principio salva com F1
+            else if (e.getKeyCode() == KeyEvent.VK_S && e.isControlDown()) {
                 game.saveGame();
             }
         }

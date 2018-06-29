@@ -52,11 +52,6 @@ public class GameMenu extends JFrame implements ActionListener {
         this.setSize(Consts.NUM_COLUMNS * Consts.CELL_SIZE + getInsets().left + getInsets().right,
                 Consts.NUM_LINES * Consts.CELL_SIZE + getInsets().top + getInsets().bottom);
 
-        savedGame = new File(Consts.SAVED_GAME_PATH);
-        if (!savedGame.exists()) { // Se não existir gravação, impossibilita o "continueButton"
-            continueButton.setEnabled(false);
-        }
-
         // Listeners para os botões
         newGameButton.addActionListener(this);
         continueButton.addActionListener(this);
@@ -95,7 +90,6 @@ public class GameMenu extends JFrame implements ActionListener {
      *         <p>Des-serializa o Objeto "GameFrame" serializado, referente a uma
      *             gravação previamente salva por um jogador, e então, inicia o jogo
      *             com o método startGame(savedGameScreen).
-     *             <!--(É necessário verificar antes de a gravação em Consts.SAVED_GAME_PATH existe--></p>
      *
      *     <b>Opções:</b>
      *         <p>Lança uma janela com opções para um Novo Jogo como ... </p>
@@ -111,17 +105,25 @@ public class GameMenu extends JFrame implements ActionListener {
             startNewGame();
         }
         else if (src == continueButton) {
-            ObjectInputStream in = null;
-            try {
-                in = new ObjectInputStream(new FileInputStream(Consts.SAVED_GAME_PATH));
-                GameFrame savedGameScreen = (GameFrame) in.readObject();
-                startGame(savedGameScreen);
-                JOptionPane.showMessageDialog(null,"Deu bom!!??");
-                in.close();
-            } catch (IOException | ClassNotFoundException exc) {
-                // Gera uma caixa de dialogo com o problema do carregamento do jogo
-                JOptionPane.showMessageDialog(this, exc.getMessage(),
-                        "Problema no carregamento", JOptionPane.WARNING_MESSAGE);
+            JFileChooser fileLoaderDialog;
+            fileLoaderDialog = new JFileChooser();
+            fileLoaderDialog.setDialogTitle("Carregar jogo...");
+            fileLoaderDialog.setApproveButtonText("Abrir");
+            fileLoaderDialog.setDialogType(JFileChooser.OPEN_DIALOG);
+            fileLoaderDialog.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            fileLoaderDialog.setMultiSelectionEnabled(false);
+            if(fileLoaderDialog.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                ObjectInputStream loadStream = null;
+                try {
+                    loadStream = new ObjectInputStream(new FileInputStream(fileLoaderDialog.getSelectedFile()));
+                    GameFrame savedGameScreen = new GameFrame(loadStream);
+                    loadStream.close();
+                    startGame(savedGameScreen);
+                } catch (IOException | ClassNotFoundException exc) {
+                    // Gera uma caixa de dialogo com o problema do carregamento do jogo
+                    JOptionPane.showMessageDialog(this, exc.getMessage(),
+                            "Problema no carregamento", JOptionPane.WARNING_MESSAGE);
+                }
             }
         }
         else if (src == optionsButton) {

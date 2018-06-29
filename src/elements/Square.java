@@ -1,12 +1,10 @@
 package elements;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import utils.Consts;
 import utils.Drawing;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -45,7 +43,10 @@ public class Square extends Element implements Serializable {
 
     @Override
     public void autoDraw(Graphics g) {
-        Drawing.draw(g, this.imageIcon, pos.getY(), pos.getX());
+        if(imageIcon != null)
+            Drawing.draw(g, this.imageIcon, pos.getY(), pos.getX());
+        else
+            Drawing.draw(g, new ImageIcon(Consts.MENU_BG_PATH), pos.getY(), pos.getX());
 
         if (isActive) {
             this.contIntervals++;
@@ -62,14 +63,8 @@ public class Square extends Element implements Serializable {
      * desativando-o.
      */
     public void erase() {
-        try {
-            imageIcon = new ImageIcon(new java.io.File(".").getCanonicalPath()
-                    + Consts.IMG_PATH + Consts.BG_NAME);
-        }
-        catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        //setTransposable(true);
+        imageIcon = null;
+        setTransposable(true);
         desactivate();
     }
 }

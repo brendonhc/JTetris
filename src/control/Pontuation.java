@@ -1,6 +1,8 @@
 package control;
 
-public class Pontuation {
+import java.io.Serializable;
+
+public class Pontuation implements Serializable  {
     private int points;
     private int base;
 
