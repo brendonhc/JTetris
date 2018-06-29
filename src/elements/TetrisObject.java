@@ -104,7 +104,7 @@ public class TetrisObject implements Serializable {
             if (pieces[i].pos.getY() > b.highestY) b.highestY = pieces[i].pos.getY();
         }
 
-        System.out.println(b.toString());
+        //System.out.println(b.toString());
 
         return b;
     }

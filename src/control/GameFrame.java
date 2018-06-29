@@ -31,7 +31,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
     private final ArrayList<Element> elemArray;
     private final GameController controller = new GameController();
 
-    private static TetrisObject activeTetrisObject;
+    private static TetrisObject currentTetrisObject;
     private static boolean gameMatrix[][];
     private static boolean isFull;
 
@@ -66,7 +66,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
 
         gameMatrix = new boolean[Consts.NUM_LINES][Consts.NUM_COLUMNS];
         isFull = false;
-        activeTetrisObject = null;
+        currentTetrisObject = null;
 
         playGame();
     }
@@ -83,17 +83,18 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
 
         /*Gera aleatóriamente peças do game até chegar ao topo*/
         do {
-            activeTetrisObject = new TetrisObject();
+            currentTetrisObject = new TetrisObject();
 
             /*Adiciona os blocos da peça ao array de elementos do frame*/
             for (int i = 0; i < 4; i++) {
-                this.addElement(activeTetrisObject.pieces[i]);
+                this.addElement(currentTetrisObject.pieces[i]);
             }
 
-        } while (!isFull && activeTetrisObject.isActive());
+        } while (!isFull && !currentTetrisObject.isActive());
     }
 
-    public final void addElement(Element elem) {
+
+    private void addElement(Element elem) {
         elemArray.add(elem);
     }
 
@@ -128,7 +129,7 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         /*Desenha todos os elementos do "elemArray" na tela e escreve a peça atual*/
         this.controller.drawAllElements(elemArray, g2);
         this.controller.processAllElements(elemArray);
-        this.setTitle(activeTetrisObject.getType().toString());
+        this.setTitle(currentTetrisObject.getType().toString());
 
         g.dispose();
         g2.dispose();
@@ -137,8 +138,8 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         }
 
         /*Verifica se a peça chegou ao chão e se já deu o tempo de movimento no mesmo*/
-        if (activeTetrisObject.getObjectBoundaries().highestX == Consts.NUM_LINES - 1 && activeTetrisObject.pieces[0].getContIntervals() == Square.TIMER_FIRE - 1)
-            activeTetrisObject.deactivatePieces();
+        if (currentTetrisObject.getObjectBoundaries().highestX == Consts.NUM_LINES - 1 && currentTetrisObject.pieces[0].getContIntervals() == Square.TIMER_FIRE - 1)
+            currentTetrisObject.deactivatePieces();
     }
 
     /**
@@ -159,22 +160,22 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
      * @param e Evento de tecla
      */
     public void keyPressed(KeyEvent e) {
-        Boundaries objBoundaries = activeTetrisObject.getObjectBoundaries();
+        Boundaries objBoundaries = currentTetrisObject.getObjectBoundaries();
 
         /* Para cada um dos 4 "Squares" que compõem a peça, faça o movimento
          * requisitado (direita, esquerda ou pra baixo) */
-        for (int i = 0; i < 4 && activeTetrisObject.isActive(); i++) {
+        for (int i = 0; i < 4 && currentTetrisObject.isActive(); i++) {
             if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 
                 if (objBoundaries.highestX < Consts.NUM_LINES - 1)
-                    activeTetrisObject.pieces[i].moveDown();
+                    currentTetrisObject.pieces[i].moveDown();
                 else
-                    activeTetrisObject.deactivatePieces();
+                    currentTetrisObject.deactivatePieces();
 
             } else if (e.getKeyCode() == KeyEvent.VK_LEFT && objBoundaries.lowestY > 0) {
-                activeTetrisObject.pieces[i].moveLeft();
+                currentTetrisObject.pieces[i].moveLeft();
             } else if (e.getKeyCode() == KeyEvent.VK_RIGHT && objBoundaries.highestY < Consts.NUM_COLUMNS - 1) {
-                activeTetrisObject.pieces[i].moveRight();
+                currentTetrisObject.pieces[i].moveRight();
             } else break;
         }
 
