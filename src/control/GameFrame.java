@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  *
  *
  * @author Sergio Piza, Brendon Hudson
- * Baseado em material do Prof. Luiz Eduardo
+ *  - Baseado em material do Prof. Luiz Eduardo
  */
 public class GameFrame extends javax.swing.JFrame implements KeyListener {
 
@@ -39,14 +39,14 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         Drawing.setGameFrame(this);
         initComponents();
 
-        /* GameFrame atual passa a "ouvir" o teclado */
+        /*GameFrame atual passa a "ouvir" o teclado*/
         this.addKeyListener(this);
 
         gameScreenWidth = Consts.NUM_COLUMNS * Consts.CELL_SIZE + getInsets().left + getInsets().right;
         gameScreenHeight = Consts.NUM_LINES * Consts.CELL_SIZE + getInsets().top + getInsets().bottom;
 
         /*Cria a janela do tamanho do tabuleiro + insets (bordas) da janela*/
-        this.setSize(gameScreenWidth + 400,
+        this.setSize(gameScreenWidth + 200,
                 gameScreenHeight);
 
         elemArray = new ArrayList<Element>();

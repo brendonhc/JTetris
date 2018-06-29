@@ -17,14 +17,22 @@ public class TetrisObject implements Serializable {
     public Square[] pieces = new Square[4];
     public Boolean isActive = true;
 
+
+    /**
+     * Inicializa uma nova peça aleatória
+     */
     public TetrisObject() {
         type = TetrisObjectType.values()[new Random().nextInt(TetrisObjectType.values().length)];
 
+        // Para debug
+        System.out.println("Novo TetrisObject: " + type);
+
         for (int i = 0; i < 4; i++) pieces[i] = new Square();
 
+        /*Monta a peça de acordo com seu tipo: I, J, O, L, S, T, Z (TetrisObjectType)*/
         switch (type) {
             case I:
-                for (int i = 1; i < 4; i++) pieces[i].setPosition(i, Consts.NUM_COLUMNS/2);
+                for (int i = 0; i < 4; i++) pieces[i].setPosition(i, Consts.NUM_COLUMNS/2);
                 break;
 
             case J:
