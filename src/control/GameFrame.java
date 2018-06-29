@@ -159,15 +159,23 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
         * Verifica a todo momento se uma das extremidades não está tocando
         * uma parte ocupada da "gameMatrix"
         * ---------------------------------------------------------*/
-//        if () {
-//
-//        }
+        Boundaries obj = currentTetrisObject.getObjectBoundaries();
+        if (currentTetrisObject.isActive() && obj.highestX < Consts.NUM_LINES-2) {
 
+            /*Verificação se está tocando um objeto já colocado*/
+            for (int i = obj.lowestY; i <= obj.highestY; i++) {
+                if (gameMatrix[obj.highestX+1][i] == OCCUPED) {
+                    occupSquares(currentTetrisObject);
+                    currentTetrisObject.deactivatePieces();
+                    playGame();
+                }
+            }
+        }
         /*-----------------------------------------------------------------
         * Verifica se a ultima peça colocada já está no maximo - GAME OVER
         * -----------------------------------------------------------------*/
-//        if () {
-//
+//        else (!currentTetrisObject.isActive()) {
+//            //
 //        }
     }
 
@@ -199,20 +207,46 @@ public class GameFrame extends javax.swing.JFrame implements KeyListener {
 
         /* Para cada um dos 4 "Squares" que compõem a peça, faça o movimento
          * requisitado (direita, esquerda ou pra baixo) */
+
         for (int i = 0; i < 4 && currentTetrisObject.isActive(); i++) {
+
+                        /*BAIXO*/
             if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                if (objBoundaries.highestX < Consts.NUM_LINES - 1) {
 
-                if (objBoundaries.highestX < Consts.NUM_LINES - 1)
+                    if (objBoundaries.highestX < Consts.NUM_LINES - 2) {
+                        for (int j = objBoundaries.lowestY; j <= objBoundaries.highestY; j++) {
+                            if (gameMatrix[objBoundaries.highestX + 1][i] == OCCUPED) {
+                                break; // Impede o movimento pra baixo
+                            }
+                        }
+                    }
                     currentTetrisObject.pieces[i].moveDown();
-//                else {
-//                    currentTetrisObject.deactivatePieces();
-//                    playGame(); // Lança uma nova peça
-//                }
+                }
 
-            } else if (e.getKeyCode() == KeyEvent.VK_LEFT && objBoundaries.lowestY > 0) {
-                currentTetrisObject.pieces[i].moveLeft();
-            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT && objBoundaries.highestY < Consts.NUM_COLUMNS - 1) {
-                currentTetrisObject.pieces[i].moveRight();
+            }            /*ESQUERDA*/
+            else if (e.getKeyCode() == KeyEvent.VK_LEFT && objBoundaries.lowestY > 0) {
+                /*Verifica se não é canto primeiro*/
+                if (objBoundaries.lowestY > 1) {
+                    for (Square s : currentTetrisObject.pieces) {
+                        if (gameMatrix[s.getPos().getX()][s.getPos().getY() - 1] == OCCUPED) {
+                            break; // Ignora o movimento para esquerda
+                        }
+                    }
+                }
+                currentTetrisObject.pieces[i].moveLeft(); // Move para esquerda
+
+            }             /*DIREITA*/
+            else if (e.getKeyCode() == KeyEvent.VK_RIGHT && objBoundaries.highestY < Consts.NUM_COLUMNS - 1) {
+                /*Verifica se não é canto primeiro*/
+                if (objBoundaries.highestY < Consts.NUM_COLUMNS-2) {
+                    for (Square s : currentTetrisObject.pieces) {
+                        if (gameMatrix[s.getPos().getX()][s.getPos().getY() + 1] == OCCUPED) {
+                            break; // Ignora o movimento para direita
+                        }
+                    }
+                }
+                currentTetrisObject.pieces[i].moveRight(); // Move para direita
             } else break;
         }
 
