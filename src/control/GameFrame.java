@@ -193,9 +193,10 @@ public class GameFrame extends javax.swing.JFrame {
 
             /*VERIFICA SE HOUVE PONTUAÇÃO*/
             if (hasFilledRow()) {
-                System.out.println("HOUVE PONTUAÇÃO!");
                 int multPontuation = freeFilledRows();
-
+                points.gain(multPontuation);
+                System.out.println("Pontuação: " + points.getPoints());
+                //repaint();
             }
             /*Possível GAME_OVER*/
             else if (currentTetrisObject.getObjectBoundaries().highestX < 3) {
@@ -261,13 +262,15 @@ public class GameFrame extends javax.swing.JFrame {
 
                 /*1. Removo seus elementos*/
                 for (Square s : gameSquares[i]) {
-                    s.erase();
                     gameSquares[s.getPos().getX()][s.getPos().getY()] = null;
+                    s.erase();
                 }
-
                 /*2. Desço todos os Squares que estavam acima*/
-
-
+                for (int row = i; row > 0; row--) {
+                    /*Trás o que tem em cima pra baixo*/
+                    for (int col = 0; col < Consts.NUM_COLUMNS; col++)
+                        gameSquares[row][col] = gameSquares[row-1][col];
+                }
             }
         }
         return freedRows;

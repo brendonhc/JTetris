@@ -14,12 +14,23 @@ public class Pontuation {
     }
 
     /**
+     * Função auxiliar para calcular a pontuação
+     * @param n numero de linhas de uma vez
+     * @return pontuação obtida
+     */
+    private int calc(int n) {
+        if (n == 1) return base;
+        base *= 4;
+        return calc(n-1);
+    }
+
+    /**
      * Método que incrementa os pontos a partir de um fator multiplicativo que será
      * multiplicado pelo valor "base" e somados a "points".
      * @param multFactor fator multiplicativo
      */
     public void gain(int multFactor) {
-        points += base*multFactor;
+        points += calc(multFactor);
     }
 
     /**
