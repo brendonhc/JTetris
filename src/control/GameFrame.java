@@ -42,9 +42,22 @@ public class GameFrame extends javax.swing.JFrame {
     private Square[][] gameSquares;  // Cada quadrado do game
     private boolean isFull;
 
-    private int gameScreenWidth;
-    private int gameScreenHeight;
+    private static int gameScreenWidth;
+    private static int gameScreenHeight;
 
+    /*Placar provisório*/
+    private static JDialog placar;
+    private static JLabel placarScore;
+
+    static {
+        placar = new JDialog();
+        placarScore = new JLabel("Score: 0");
+        //placarScore.setFont(Consts.SCORE_FONT);
+
+        placar.add(placarScore);
+        placar.setSize(200,100);
+        placar.setVisible(true);
+    }
 
     /**
      * Inicializa uma tela de jogo com seus elementos e obstáculos
@@ -55,8 +68,6 @@ public class GameFrame extends javax.swing.JFrame {
         controller = new GameController(this); /*Controlador para o jogo atual*/
         points = new Pontuation(Consts.BASE_POINT_INC); /*Sistema de pontuação*/
 
-
-
         /*O objeto GameController controller passa a "ouvir" o teclado*/
         this.addKeyListener(controller);
 
@@ -64,7 +75,9 @@ public class GameFrame extends javax.swing.JFrame {
         gameScreenHeight = Consts.NUM_LINES * Consts.CELL_SIZE + getInsets().top + getInsets().bottom;
 
         /*Cria a janela do tamanho do tabuleiro + insets (bordas) da janela*/
-        this.setSize(gameScreenWidth + 200, gameScreenHeight);
+        this.setSize(gameScreenWidth/*+ 200*/-10, gameScreenHeight);
+
+        //this.setLocationRelativeTo(placar);
 
         elemArray = new ArrayList<Element>();
 
@@ -90,7 +103,7 @@ public class GameFrame extends javax.swing.JFrame {
         */
 
         currentTetrisObject = null;
-
+        initScore();
         /*Lança a primeira peça*/
         playGame();
     }
@@ -113,10 +126,16 @@ public class GameFrame extends javax.swing.JFrame {
 		this.gameScreenHeight = gameFile.readInt();
 		this.controller = new GameController(this);
 		this.addKeyListener(controller);
-		this.setSize(gameScreenWidth + 200, gameScreenHeight);
+		this.setSize(gameScreenWidth/* + 200*/-10, gameScreenHeight);
 		this.currentTetrisObject = null;
+		initScore();
 		playGame();
 	}
+
+	private void initScore() {
+        placar.setLocation(gameScreenWidth+15,0);
+        placar.transferFocus();
+    }
 
     /**
      * Método que inicia a lógica do game
@@ -252,6 +271,7 @@ public class GameFrame extends javax.swing.JFrame {
         if (hasFilledRow()) {
             int multPontuation = freeFilledRows();
             points.gain(multPontuation);
+            placarScore.setText("Score: "+ points.getPoints());
             System.out.println("Pontuação: " + points.getPoints());
         }
         /*Possível GAME_OVER*/

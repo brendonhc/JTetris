@@ -33,6 +33,7 @@ public class Pontuation implements Serializable  {
      */
     public void gain(int multFactor) {
         points += calc(multFactor);
+        base = 50;
     }
 
     /**
