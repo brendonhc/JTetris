@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -35,7 +36,8 @@ public class GameFrame extends javax.swing.JFrame {
     private Pontuation points;
 
     protected TetrisObject currentTetrisObject;
-    private boolean gameMatrix[][];
+    private boolean[][] gameMatrix; // Para controlar posições OCCUPED ou FREE
+    private Square[][] gameSquares;  // Cada quadrado do game
     private boolean isFull;
 
     private int gameScreenWidth;
@@ -50,6 +52,10 @@ public class GameFrame extends javax.swing.JFrame {
         initComponents();
         controller = new GameController(this); /*Controlador para o jogo atual*/
         points = new Pontuation(Consts.BASE_POINT_INC); /*Sistema de pontuação*/
+
+        /*Adiciono e removo aqui todos blocos do game (inicializados com null)*/
+        gameSquares = new Square[Consts.NUM_LINES][Consts.NUM_COLUMNS];
+        for (Square[] s : gameSquares) Arrays.fill(s, null);
 
         /*O objeto GameController controller passa a "ouvir" o teclado*/
         this.addKeyListener(controller);
@@ -181,23 +187,38 @@ public class GameFrame extends javax.swing.JFrame {
          * -------------------------------------------------------------------*/
         if (objLowerBoundsIsOccuped(currentTetrisObject) && currentTetrisObject.pieces[0].getContIntervals() == Square.TIMER_FIRE - 1) {
             currentTetrisObject.desactivatePieces();
-            /*MARCA COMO OCUPADO ONDE A PEÇA CAIU*/
-            occupSquares(currentTetrisObject);
 
+            /*MARCA COMO OCUPADO ONDE A PEÇA CAIU e adiciona seus squares a "rowsSquares"*/
+            occupSquares(currentTetrisObject);
+            addGameObjectSquares(currentTetrisObject);
+
+            /*VERIFICA SE HOUVE PONTUAÇÃO*/
+            if (hasFilledRow()) {
+                int multPontuation = freeFilledRows();
+
+            }
             /*Possível GAME_OVER*/
-            if (currentTetrisObject.getObjectBoundaries().highestX < 3) {
+            else if (currentTetrisObject.getObjectBoundaries().highestX < 3) {
                 System.out.println("GAME OVER");
                 isFull = true;
 
                 finishGame();
             }
-            /*Verifica PONTUAÇÃO e Lança uma nova peça*/
-            else {
-                if (hasFilledRow()) {
-                    int numberFilledsRows = freeFilledRows();
-                }
-                playGame();
-            }
+
+            /*Lança uma NOVA PEÇA*/
+            playGame();
+
+        }
+    }
+
+    /**
+     * Método que adiciona um objeto do tipo "GameObject" quadrado por quadrado
+     * na matriz "gameSquares" que representa a tela do jogo.
+     * @param obj objeto a ser adicionado
+     */
+    private void addGameObjectSquares(GameObject obj) {
+        for (Square s : obj.pieces) {
+            gameSquares[s.getPos().getX()][s.getPos().getY()] = s;
         }
     }
 
@@ -231,7 +252,13 @@ public class GameFrame extends javax.swing.JFrame {
      */
     private int freeFilledRows() {
         int freedRows = 0;
+        /*Para cada linha preenchida, libero seus squares para descerem*/
+        for (int i = Consts.NUM_LINES-1; i >= 0; i--) {
+            if (isFilledRow(i)) {
+                freedRows++;
 
+            }
+        }
         return freedRows;
     }
 
