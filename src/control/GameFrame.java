@@ -135,6 +135,7 @@ public class GameFrame extends javax.swing.JFrame {
 	private void initScore() {
         placar.setLocation(gameScreenWidth+15,0);
         placar.transferFocus();
+        this.requestFocus();
     }
 
     /**
@@ -163,6 +164,7 @@ public class GameFrame extends javax.swing.JFrame {
      */
     private void finishGame() {
         this.setVisible(false);
+        placar.setVisible(false);
         Main.MAIN_MENU.setVisible(true);
     }
 
