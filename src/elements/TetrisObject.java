@@ -24,7 +24,6 @@ public class TetrisObject extends GameObject implements Serializable {
 	 */
 	public TetrisObject(GameFrame gameFrame) {
 		type = TetrisObjectType.values()[new Random().nextInt(TetrisObjectType.values().length)];
-		type = TetrisObjectType.L;
 		squaresNumber = 4;
 		pieces = new Square[squaresNumber];
 		isActive = true;
@@ -131,6 +130,8 @@ public class TetrisObject extends GameObject implements Serializable {
 				rotatePosition = 0;
 				break;
 		}
+
+		System.out.println("rotate position " + rotatePosition);
 	}
 
 	/**
@@ -391,10 +392,26 @@ public class TetrisObject extends GameObject implements Serializable {
 				break;
 
 			case J:
-				pieces[0].setPosition(0, Consts.NUM_COLUMNS/2);
-				pieces[1].setPosition(1, Consts.NUM_COLUMNS/2);
-				pieces[2].setPosition(1, Consts.NUM_COLUMNS/2 + 1);
-				pieces[3].setPosition(1, Consts.NUM_COLUMNS/2 + 2);
+				try {
+
+					if (!gameFrame.objRightBoundsIsOccuped(this)) throw new Exception();
+
+					if (!gameFrame.objRightBoundsIsOccuped(this) && gameFrame.objLeftBoundsIsOccuped(this)) {
+						this.shiftRight();
+						throw new Exception();
+					}
+
+					if (gameFrame.objRightBoundsIsOccuped(this) && !gameFrame.objLeftBoundsIsOccuped(this)) {
+						this.shiftLeft();
+						throw new Exception();
+					}
+
+				} catch (Exception e) {
+					pieces[0].setPosition(keyPos.getX(), keyPos.getY() - 1);
+					pieces[1].setPosition(keyPos.getX(), keyPos.getY() + 1);
+					pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY() + 1);
+				}
+
 				break;
 
 			case O:
@@ -491,10 +508,21 @@ public class TetrisObject extends GameObject implements Serializable {
 				break;
 
 			case J:
-				pieces[0].setPosition(0, Consts.NUM_COLUMNS/2);
-				pieces[1].setPosition(1, Consts.NUM_COLUMNS/2);
-				pieces[2].setPosition(1, Consts.NUM_COLUMNS/2 + 1);
-				pieces[3].setPosition(1, Consts.NUM_COLUMNS/2 + 2);
+				try {
+
+					if (gameFrame.objUpperBoundsAreOccupied(this)) {
+						if (!gameFrame.objLowerBoundsIsOccuped(this)) {
+							this.shiftDown();
+							throw new Exception();
+						}
+					} else throw new Exception();
+
+				} catch (Exception e) {
+					pieces[0].setPosition(keyPos.getX() - 1, keyPos.getY());
+					pieces[1].setPosition(keyPos.getX() + 1, keyPos.getY() - 1);
+					pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY());
+				}
+
 				break;
 
 			case O:
