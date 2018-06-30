@@ -15,15 +15,21 @@ import java.util.Random;
  * @author Sergio Piza, Brendon Hudson
  */
 public class TetrisObject extends GameObject implements Serializable {
+    public static TetrisObjectType nextType;
 	private TetrisObjectType type;
 	private short rotatePosition;
 	private GameFrame gameFrame;
+
+	static {
+	    nextType = TetrisObjectType.values()[new Random().nextInt(TetrisObjectType.values().length)];
+    }
 
 	/**
 	 * Inicializa uma nova peça aleatória
 	 */
 	public TetrisObject(GameFrame gameFrame) {
-		type = TetrisObjectType.values()[new Random().nextInt(TetrisObjectType.values().length)];
+	    type = nextType;
+		nextType = TetrisObjectType.values()[new Random().nextInt(TetrisObjectType.values().length)];
 		squaresNumber = 4;
 		pieces = new Square[squaresNumber];
 		isActive = true;
@@ -92,6 +98,10 @@ public class TetrisObject extends GameObject implements Serializable {
 				break;
 		}
 	}
+
+	public static TetrisObjectType getNextType() {
+	    return nextType;
+    }
 
 	/**
 	 * Devolve o tipo enum correspondente a peça

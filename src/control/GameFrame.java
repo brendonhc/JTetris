@@ -235,7 +235,7 @@ public class GameFrame extends javax.swing.JFrame {
         /*Desenha todos os elementos do "elemArray" na tela e escreve a peça atual*/
         this.controller.drawAllElements(elemArray, g2);
         this.controller.processAllElements(elemArray);
-        this.setTitle(currentTetrisObject.getType().toString());
+        this.setTitle("Next: " + currentTetrisObject.getNextType().toString());
 
         /*------------CONDICIONAIS IMPORTANTES----------------------
          *--------------------------------------------------------------------
