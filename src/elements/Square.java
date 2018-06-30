@@ -32,6 +32,7 @@ public class Square extends Element implements Serializable {
         super(constColor);
         this.isTransposable = false;
         this.contIntervals = 0;
+        this.setPosition(0,0);
     }
 
     /**
