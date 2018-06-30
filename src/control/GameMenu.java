@@ -1,6 +1,7 @@
 package control;
 
 import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+import elements.Stage;
 import utils.Consts;
 
 import javax.swing.*;
@@ -25,15 +26,14 @@ import java.io.*;
  * @author Brendon Hudson
  **/
 public class GameMenu extends JFrame implements ActionListener {
-    private GameFrame gameScreen;
-    private File savedGame;
+    private Stage gameScreen;
 
     private JPanel GameMenu;
     private JPanel Buttons;
     private JPanel Title;
     private JButton continueButton;
     private JButton newGameButton;
-    private JButton optionsButton;
+    private JCheckBox challengeCheckBox;
 
     private JPanel background;
     private ImageIcon imgBackground;
@@ -55,35 +55,22 @@ public class GameMenu extends JFrame implements ActionListener {
         // Listeners para os botões
         newGameButton.addActionListener(this);
         continueButton.addActionListener(this);
-        optionsButton.addActionListener(this);
     }
 
     /**
-     * Inicia um novo jogo a partir de uma nova instância de GameFrame
+     * Inicia um novo jogo a partir de uma nova instância de Stage
      */
     private void startNewGame() {
-        gameScreen = new GameFrame();
-        startGame(gameScreen);
-    }
-
-    /**
-     * Inicia o jogo a partir de um GameFrame inicializado
-     * <p>
-     *     Serve para carregar jogos salvos anteriormente
-     * </p>
-     * @param gameScreen JFrame com o jogo inicializado
-     */
-    private void startGame(GameFrame gameScreen) {
-        gameScreen.setVisible(true);
-        gameScreen.createBufferStrategy(2);
-        gameScreen.go();
+        gameScreen = new Stage(challengeCheckBox.isSelected());
+        this.setVisible(false);
+        gameScreen.start();
     }
 
     /**
      * Método que responde as ações no Menu do Jogo
      * <p>
      *     <b>Novo Jogo</b>
-     *         <p>Simplesmente, inicia um jogo do zero com o método startGame()</p>
+     *         <p>Simplesmente, inicia um jogo do zero, verificando se o jogador deseja ir para um nível mais desafiador.</p>
      *
      *
      *     <b>Continuar</b>
@@ -91,8 +78,8 @@ public class GameMenu extends JFrame implements ActionListener {
      *             gravação previamente salva por um jogador, e então, inicia o jogo
      *             com o método startGame(savedGameScreen).
      *
-     *     <b>Opções:</b>
-     *         <p>Lança uma janela com opções para um Novo Jogo como ... </p>
+     *     <b>Me desafie:</b>
+     *         <p>Se marcado, o jogo iniciará um nível a frente.</p>
      *
      * @param e Evento gerado no frame do menu por algum de seus botões
      */
@@ -101,7 +88,6 @@ public class GameMenu extends JFrame implements ActionListener {
         Object src = e.getSource();
 
         if (src == newGameButton) {
-            setVisible(false);
             startNewGame();
         }
         else if (src == continueButton) {
@@ -118,16 +104,15 @@ public class GameMenu extends JFrame implements ActionListener {
                     loadStream = new ObjectInputStream(new FileInputStream(fileLoaderDialog.getSelectedFile()));
                     GameFrame savedGameScreen = new GameFrame(loadStream);
                     loadStream.close();
-                    startGame(savedGameScreen);
+                    gameScreen = new Stage(savedGameScreen);
+                    this.setVisible(false);
+                    gameScreen.start();
                 } catch (IOException | ClassNotFoundException exc) {
                     // Gera uma caixa de dialogo com o problema do carregamento do jogo
                     JOptionPane.showMessageDialog(this, exc.getMessage(),
                             "Problema no carregamento", JOptionPane.WARNING_MESSAGE);
                 }
             }
-        }
-        else if (src == optionsButton) {
-            // Janela de opções
         }
     }
 }

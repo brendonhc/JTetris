@@ -15,7 +15,7 @@ import javax.swing.ImageIcon;
  * @author Luiz Eduardo
  * Baseado em material do Prof. Jose Fernando Junior
  */
-public abstract class Element implements Serializable{
+public abstract class Element implements Serializable {
 
     protected ImageIcon imageIcon;
     protected Position pos;

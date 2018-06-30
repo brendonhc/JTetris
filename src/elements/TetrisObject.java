@@ -23,8 +23,7 @@ public class TetrisObject extends GameObject implements Serializable {
      * Inicializa uma nova peça aleatória
      */
     public TetrisObject(GameFrame gameFrame) {
-        //type = TetrisObjectType.values()[new Random().nextInt(TetrisObjectType.values().length)];
-        type = TetrisObjectType.S;
+        type = TetrisObjectType.values()[new Random().nextInt(TetrisObjectType.values().length)];
         squaresNumber = 4;
         pieces = new Square[squaresNumber];
         isActive = true;
@@ -33,7 +32,6 @@ public class TetrisObject extends GameObject implements Serializable {
 
         // Para debug
         System.out.println("Novo TetrisObject: " + type);
-
 
 
         /*Monta a peça de acordo com seu tipo: I, J, O, L, S, T, Z (TetrisObjectType)*/
@@ -112,7 +110,7 @@ public class TetrisObject extends GameObject implements Serializable {
 
         Position keyPos = pieces[2].pos;
 
-        if (this.type == TetrisObjectType.O) return;
+	    if (this.type == TetrisObjectType.O) return;
 
         switch (rotatePosition) {
             case 0:
@@ -190,7 +188,6 @@ public class TetrisObject extends GameObject implements Serializable {
                 break;
 
             case O:
-
                 break;
 
             case L:
@@ -202,53 +199,52 @@ public class TetrisObject extends GameObject implements Serializable {
                 break;
 
             case S:
-                try {
-                    if (!gameFrame.objLeftBoundsIsOccuped(this)) throw new Exception();
-                    if (gameFrame.objLeftBoundsIsOccuped(this) && !gameFrame.objRightBoundsIsOccuped(this)) {
-                        this.shiftRight();
-                        throw new Exception();
-                    }
+	            try {
+		            if (!gameFrame.objLeftBoundsIsOccuped(this)) throw new Exception();
+		            if (gameFrame.objLeftBoundsIsOccuped(this) && !gameFrame.objRightBoundsIsOccuped(this)) {
+			            this.shiftRight();
+			            throw new Exception();
+		            }
 
-                } catch (Exception e) {
-                    pieces[0].setPosition(keyPos.getX() - 1, keyPos.getY());
-                    pieces[1].setPosition(keyPos.getX(), keyPos.getY() - 1);
-                    pieces[3].setPosition(keyPos.getX() -1, keyPos.getY() + 1);
-                }
+	            } catch (Exception e) {
+		            pieces[0].setPosition(keyPos.getX() - 1, keyPos.getY());
+		            pieces[1].setPosition(keyPos.getX(), keyPos.getY() - 1);
+		            pieces[3].setPosition(keyPos.getX() -1, keyPos.getY() + 1);
+	            }
                 break;
 
             case T:
-                try {
-                    if (!gameFrame.objRightBoundsIsOccuped(this)) throw new Exception();
-                    if (gameFrame.objRightBoundsIsOccuped(this) && !gameFrame.objLeftBoundsIsOccuped(this)) {
-                        this.shiftLeft();
-                        throw new Exception();
-                    }
-                    if (!gameFrame.objRightBoundsIsOccuped(this) && gameFrame.objLeftBoundsIsOccuped(this)) {
-                        this.shiftRight();
-                        throw new Exception();
-                    }
+	            try {
+		            if (!gameFrame.objRightBoundsIsOccuped(this)) throw new Exception();
+		            if (gameFrame.objRightBoundsIsOccuped(this) && !gameFrame.objLeftBoundsIsOccuped(this)) {
+			            this.shiftLeft();
+			            throw new Exception();
+		            }
+		            if (!gameFrame.objRightBoundsIsOccuped(this) && gameFrame.objLeftBoundsIsOccuped(this)) {
+			            this.shiftRight();
+			            throw new Exception();
+		            }
 
-                } catch (Exception e) {
-                    pieces[0].setPosition(keyPos.getX(), keyPos.getY() - 1);
-                    pieces[1].setPosition(keyPos.getX(), keyPos.getY() + 1);
-                    pieces[3].setPosition(keyPos.getX() - 1, keyPos.getY());
-                }
-
+	            } catch (Exception e) {
+		            pieces[0].setPosition(keyPos.getX(), keyPos.getY() - 1);
+		            pieces[1].setPosition(keyPos.getX(), keyPos.getY() + 1);
+		            pieces[3].setPosition(keyPos.getX() - 1, keyPos.getY());
+	            }
                 break;
 
             case Z:
-                try {
-                    if (!gameFrame.objLeftBoundsIsOccuped(this)) throw new Exception();
-                    if (gameFrame.objLeftBoundsIsOccuped(this) && !gameFrame.objRightBoundsIsOccuped(this)) {
-                        this.shiftRight();
-                        throw new Exception();
-                    }
+	            try {
+		            if (!gameFrame.objLeftBoundsIsOccuped(this)) throw new Exception();
+		            if (gameFrame.objLeftBoundsIsOccuped(this) && !gameFrame.objRightBoundsIsOccuped(this)) {
+			            this.shiftRight();
+			            throw new Exception();
+		            }
 
-                } catch (Exception e) {
-                    pieces[0].setPosition(keyPos.getX() - 1, keyPos.getY());
-                    pieces[1].setPosition(keyPos.getX() - 1, keyPos.getY() - 1);
-                    pieces[3].setPosition(keyPos.getX(), keyPos.getY() + 1);
-                }
+	            } catch (Exception e) {
+		            pieces[0].setPosition(keyPos.getX() - 1, keyPos.getY());
+		            pieces[1].setPosition(keyPos.getX() - 1, keyPos.getY() - 1);
+		            pieces[3].setPosition(keyPos.getX(), keyPos.getY() + 1);
+	            }
                 break;
         }
 
@@ -290,51 +286,51 @@ public class TetrisObject extends GameObject implements Serializable {
                 break;
 
             case S:
-                try {
-                    if (gameFrame.objLowerBoundsIsOccuped(this)) {
-                        if (!gameFrame.objUpperBoundsAreOccupied(this)) {
-                            this.shiftUp();
-                            throw new Exception();
-                        }
-                    } else throw new Exception();
-                } catch (Exception e) {
-                    pieces[0].setPosition(keyPos.getX() - 1, keyPos.getY());
-                    pieces[1].setPosition(keyPos.getX(), keyPos.getY() + 1);
-                    pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY() + 1);
-                }
+	            try {
+		            if (gameFrame.objLowerBoundsIsOccuped(this)) {
+			            if (!gameFrame.objUpperBoundsAreOccupied(this)) {
+				            this.shiftUp();
+				            throw new Exception();
+			            }
+		            } else throw new Exception();
+	            } catch (Exception e) {
+		            pieces[0].setPosition(keyPos.getX() - 1, keyPos.getY());
+		            pieces[1].setPosition(keyPos.getX(), keyPos.getY() + 1);
+		            pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY() + 1);
+	            }
                 break;
 
             case T:
-                try {
+	            try {
 
-                    if (gameFrame.objLowerBoundsIsOccuped(this)) {
-                        if (!gameFrame.objUpperBoundsAreOccupied(this)) {
-                            this.shiftUp();
+		            if (gameFrame.objLowerBoundsIsOccuped(this)) {
+			            if (!gameFrame.objUpperBoundsAreOccupied(this)) {
+				            this.shiftUp();
 
-                        }
-                    }
+			            }
+		            }
 
-                    throw new Exception();
-                } catch (Exception e) {
-                    pieces[0].setPosition(keyPos.getX() - 1, keyPos.getY());
-                    pieces[1].setPosition(keyPos.getX(), keyPos.getY() + 1);
-                    pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY());
-                }
+		            throw new Exception();
+	            } catch (Exception e) {
+		            pieces[0].setPosition(keyPos.getX() - 1, keyPos.getY());
+		            pieces[1].setPosition(keyPos.getX(), keyPos.getY() + 1);
+		            pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY());
+	            }
                 break;
 
             case Z:
-                try {
-                    if (gameFrame.objLowerBoundsIsOccuped(this)) {
-                        if (!gameFrame.objUpperBoundsAreOccupied(this)) {
-                            this.shiftUp();
-                            throw new Exception();
-                        }
-                    } else throw new Exception();
-                } catch (Exception e) {
-                    pieces[0].setPosition(keyPos.getX() + 1, keyPos.getY());
-                    pieces[1].setPosition(keyPos.getX(), keyPos.getY() + 1);
-                    pieces[3].setPosition(keyPos.getX() - 1, keyPos.getY() + 1);
-                }
+	            try {
+		            if (gameFrame.objLowerBoundsIsOccuped(this)) {
+			            if (!gameFrame.objUpperBoundsAreOccupied(this)) {
+				            this.shiftUp();
+				            throw new Exception();
+			            }
+		            } else throw new Exception();
+	            } catch (Exception e) {
+		            pieces[0].setPosition(keyPos.getX() + 1, keyPos.getY());
+		            pieces[1].setPosition(keyPos.getX(), keyPos.getY() + 1);
+		            pieces[3].setPosition(keyPos.getX() - 1, keyPos.getY() + 1);
+	            }
                 break;
         }
     }
@@ -371,55 +367,55 @@ public class TetrisObject extends GameObject implements Serializable {
                 break;
 
             case S:
-                try {
-                    if (!gameFrame.objLeftBoundsIsOccuped(this)) throw new Exception();
-                    if (gameFrame.objLeftBoundsIsOccuped(this) && !gameFrame.objRightBoundsIsOccuped(this)) {
-                        this.shiftRight();
-                        throw new Exception();
-                    }
+	            try {
+		            if (!gameFrame.objLeftBoundsIsOccuped(this)) throw new Exception();
+		            if (gameFrame.objLeftBoundsIsOccuped(this) && !gameFrame.objRightBoundsIsOccuped(this)) {
+			            this.shiftRight();
+			            throw new Exception();
+		            }
 
-                } catch (Exception e) {
-                    pieces[0].setPosition(keyPos.getX() + 1, keyPos.getY() - 1);
-                    pieces[1].setPosition(keyPos.getX() + 1, keyPos.getY());
-                    pieces[3].setPosition(keyPos.getX(), keyPos.getY() + 1);
-                }
+	            } catch (Exception e) {
+		            pieces[0].setPosition(keyPos.getX() + 1, keyPos.getY() - 1);
+		            pieces[1].setPosition(keyPos.getX() + 1, keyPos.getY());
+		            pieces[3].setPosition(keyPos.getX(), keyPos.getY() + 1);
+	            }
                 break;
 
             case T:
-                try {
+	            try {
 
-                    if (!gameFrame.objRightBoundsIsOccuped(this)) throw new Exception();
+		            if (!gameFrame.objRightBoundsIsOccuped(this)) throw new Exception();
 
-                    if (!gameFrame.objRightBoundsIsOccuped(this) && gameFrame.objLeftBoundsIsOccuped(this)) {
-                        this.shiftRight();
-                        throw new Exception();
-                    }
+		            if (!gameFrame.objRightBoundsIsOccuped(this) && gameFrame.objLeftBoundsIsOccuped(this)) {
+			            this.shiftRight();
+			            throw new Exception();
+		            }
 
-                    if (gameFrame.objRightBoundsIsOccuped(this) && !gameFrame.objLeftBoundsIsOccuped(this)) {
-                        this.shiftLeft();
-                        throw new Exception();
-                    }
+		            if (gameFrame.objRightBoundsIsOccuped(this) && !gameFrame.objLeftBoundsIsOccuped(this)) {
+			            this.shiftLeft();
+			            throw new Exception();
+		            }
 
-                } catch (Exception e) {
-                    pieces[0].setPosition(keyPos.getX(), keyPos.getY() - 1);
-                    pieces[1].setPosition(keyPos.getX(), keyPos.getY() + 1);
-                    pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY());
-                }
+	            } catch (Exception e) {
+		            pieces[0].setPosition(keyPos.getX(), keyPos.getY() - 1);
+		            pieces[1].setPosition(keyPos.getX(), keyPos.getY() + 1);
+		            pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY());
+	            }
                 break;
 
             case Z:
-                try {
-                    if (!gameFrame.objLeftBoundsIsOccuped(this)) throw new Exception();
-                    if (gameFrame.objLeftBoundsIsOccuped(this) && !gameFrame.objRightBoundsIsOccuped(this)) {
-                        this.shiftRight();
-                        throw new Exception();
-                    }
+	            try {
+		            if (!gameFrame.objLeftBoundsIsOccuped(this)) throw new Exception();
+		            if (gameFrame.objLeftBoundsIsOccuped(this) && !gameFrame.objRightBoundsIsOccuped(this)) {
+			            this.shiftRight();
+			            throw new Exception();
+		            }
 
-                } catch (Exception e) {
-                    pieces[0].setPosition(keyPos.getX(), keyPos.getY() - 1);
-                    pieces[1].setPosition(keyPos.getX() + 1, keyPos.getY());
-                    pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY() + 1);
-                }
+	            } catch (Exception e) {
+		            pieces[0].setPosition(keyPos.getX(), keyPos.getY() - 1);
+		            pieces[1].setPosition(keyPos.getX() + 1, keyPos.getY());
+		            pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY() + 1);
+	            }
                 break;
         }
     }
@@ -456,50 +452,50 @@ public class TetrisObject extends GameObject implements Serializable {
                 break;
 
             case S:
-                try {
-                    if (gameFrame.objUpperBoundsAreOccupied(this)) {
-                        if (!gameFrame.objLowerBoundsIsOccuped(this)) {
-                            this.shiftDown();
-                            throw new Exception();
-                        }
-                    } else throw new Exception();
-                } catch (Exception e) {
-                    pieces[0].setPosition(keyPos.getX(), keyPos.getY() - 1);
-                    pieces[1].setPosition(keyPos.getX() - 1, keyPos.getY() - 1);
-                    pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY());
-                }
+	            try {
+		            if (gameFrame.objUpperBoundsAreOccupied(this)) {
+			            if (!gameFrame.objLowerBoundsIsOccuped(this)) {
+				            this.shiftDown();
+				            throw new Exception();
+			            }
+		            } else throw new Exception();
+	            } catch (Exception e) {
+		            pieces[0].setPosition(keyPos.getX(), keyPos.getY() - 1);
+		            pieces[1].setPosition(keyPos.getX() - 1, keyPos.getY() - 1);
+		            pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY());
+	            }
                 break;
 
             case T:
-                try {
+	            try {
 
-                    if (gameFrame.objUpperBoundsAreOccupied(this)) {
-                        if (!gameFrame.objLowerBoundsIsOccuped(this)) {
-                            this.shiftDown();
-                            throw new Exception();
-                        }
-                    } else throw new Exception();
+		            if (gameFrame.objUpperBoundsAreOccupied(this)) {
+			            if (!gameFrame.objLowerBoundsIsOccuped(this)) {
+				            this.shiftDown();
+				            throw new Exception();
+			            }
+		            } else throw new Exception();
 
-                } catch (Exception e) {
-                    pieces[0].setPosition(keyPos.getX() - 1, keyPos.getY());
-                    pieces[1].setPosition(keyPos.getX(), keyPos.getY() - 1);
-                    pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY());
-                }
+	            } catch (Exception e) {
+		            pieces[0].setPosition(keyPos.getX() - 1, keyPos.getY());
+		            pieces[1].setPosition(keyPos.getX(), keyPos.getY() - 1);
+		            pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY());
+	            }
                 break;
 
             case Z:
-                try {
-                    if (gameFrame.objUpperBoundsAreOccupied(this)) {
-                        if (!gameFrame.objLowerBoundsIsOccuped(this)) {
-                            this.shiftDown();
-                            throw new Exception();
-                        }
-                    } else throw new Exception();
-                } catch (Exception e) {
-                    pieces[0].setPosition(keyPos.getX() + 1, keyPos.getY());
-                    pieces[1].setPosition(keyPos.getX(), keyPos.getY() - 1);
-                    pieces[3].setPosition(keyPos.getX() - 1, keyPos.getY() - 1);
-                }
+	            try {
+		            if (gameFrame.objUpperBoundsAreOccupied(this)) {
+			            if (!gameFrame.objLowerBoundsIsOccuped(this)) {
+				            this.shiftDown();
+				            throw new Exception();
+			            }
+		            } else throw new Exception();
+	            } catch (Exception e) {
+		            pieces[0].setPosition(keyPos.getX() + 1, keyPos.getY());
+		            pieces[1].setPosition(keyPos.getX(), keyPos.getY() - 1);
+		            pieces[3].setPosition(keyPos.getX() - 1, keyPos.getY() - 1);
+	            }
                 break;
         }
     }
@@ -512,12 +508,13 @@ public class TetrisObject extends GameObject implements Serializable {
         for (int i = 0; i < 4; i++) pieces[i].pos.moveRight();
     }
 
-    private void shiftUp() {
-        for (int i = 0; i < 4; i++) pieces[i].pos.moveUp();
-    }
+	private void shiftUp() {
+		for (int i = 0; i < 4; i++) pieces[i].pos.moveUp();
+	}
 
-    private void shiftDown() {
-        for (int i = 0; i < 4; i++) pieces[i].pos.moveDown();
-    }
+	private void shiftDown() {
+		for (int i = 0; i < 4; i++) pieces[i].pos.moveDown();
+	}
+
 
 }

@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  *
  *
  *
- * @author Sergio Piza, Brendon Hudson
+ * @author Sergio Piza, Brendon Hudson, Matheus C.
  *  - Baseado em material do Prof. Luiz Eduardo
  */
 public class GameFrame extends javax.swing.JFrame {
@@ -42,71 +42,56 @@ public class GameFrame extends javax.swing.JFrame {
     private Square[][] gameSquares;  // Cada quadrado do game
     private boolean isFull;
 
-    private static int gameScreenWidth;
-    private static int gameScreenHeight;
+    private int gameScreenWidth;
+    private int gameScreenHeight;
 
-    /*Placar provisório*/
-    private static JDialog placar;
-    private static JLabel placarScore;
+	/*Placar provisório*/
+	private static JDialog placar;
+	private static JLabel placarScore;
 
-    static {
-        placar = new JDialog();
-        placarScore = new JLabel("Score: 0");
-        //placarScore.setFont(Consts.SCORE_FONT);
 
-        placar.add(placarScore);
-        placar.setSize(200,100);
-        placar.setVisible(true);
-    }
+	static {
+		placar = new JDialog();
+		placarScore = new JLabel("Score: 0");
+		//placarScore.setFont(Consts.SCORE_FONT);
 
-    /**
-     * Inicializa uma tela de jogo com seus elementos e obstáculos
-     */
-    public GameFrame() {
-        Drawing.setGameFrame(this);
-        initComponents();
-        controller = new GameController(this); /*Controlador para o jogo atual*/
-        points = new Pontuation(Consts.BASE_POINT_INC); /*Sistema de pontuação*/
+		placar.add(placarScore);
+		placar.setSize(200,100);
+	}
 
-        /*O objeto GameController controller passa a "ouvir" o teclado*/
-        this.addKeyListener(controller);
+	/**
+	 * Inicializa uma tela de jogo com seus elementos e obstáculos.
+	 * @param elemArray elementos no jogo
+	 * @param gameSquares inicia com os obstáculos (se houverem)
+	 */
+	public GameFrame(ArrayList<Element> elemArray, Square[][] gameSquares) {
+		Drawing.setGameFrame(this);
+		initComponents();
 
-        gameScreenWidth = Consts.NUM_COLUMNS * Consts.CELL_SIZE + getInsets().left + getInsets().right;
-        gameScreenHeight = Consts.NUM_LINES * Consts.CELL_SIZE + getInsets().top + getInsets().bottom;
+		controller = new GameController(this); /*Controlador para o jogo atual*/
+		points = new Pontuation(Consts.BASE_POINT_INC); /*Sistema de pontuação*/
 
-        /*Cria a janela do tamanho do tabuleiro + insets (bordas) da janela*/
-        this.setSize(gameScreenWidth/*+ 200*/-10, gameScreenHeight);
+		/*O objeto GameController controller passa a "ouvir" o teclado*/
+		this.addKeyListener(controller);
 
-        //this.setLocationRelativeTo(placar);
+		gameScreenWidth = Consts.NUM_COLUMNS * Consts.CELL_SIZE + getInsets().left + getInsets().right;
+		gameScreenHeight = Consts.NUM_LINES * Consts.CELL_SIZE + getInsets().top + getInsets().bottom;
 
-        elemArray = new ArrayList<Element>();
+		/*Cria a janela do tamanho do tabuleiro + insets (bordas) da janela*/
+		this.setSize(gameScreenWidth + 200, gameScreenHeight);
 
-        /*Inicializa matriz de controle de blocos ocupados na tela do game*/
-        /*Adiciono e removo aqui todos blocos do game (inicializados com null)*/
-        gameSquares = new Square[Consts.NUM_LINES][Consts.NUM_COLUMNS];
-        for (Square[] s : gameSquares) Arrays.fill(s, null);
-        isFull = false;
+		this.elemArray = elemArray;
 
-        /*Cria e adiciona elementos no "elemArray" */
-        /* COMO ADICIONAR ELEMENTOS AO CENARIO:
-        * Exemplo do LoLo:
-        *
-        * Element lolo = new Lolo("lolo.png");
-        * lolo.setPosition(Consts.NUM_COLUMNS/2, Consts.NUM_LINES/2);
-        * lolo.setTransposable(false);
-        *
-        * this.addElement(lolo);
-        *
-        * Para que as peças não o atravesse, adicione-o em gameSquare com
-        * addGameObjectSquare()
-        * x e y em gameSquare[x][y]
-        */
+		/*Inicializa matriz de controle de blocos ocupados na tela do game*/
+		this.gameSquares = gameSquares;
+		isFull = false;
 
-        currentTetrisObject = null;
-        initScore();
-        /*Lança a primeira peça*/
-        playGame();
-    }
+		currentTetrisObject = null;
+
+		initScore();
+		/*Lança a primeira peça*/
+		playGame();
+	}
 
 	/**
 	 * Inicializa um jogo salvo em disco.
@@ -119,24 +104,28 @@ public class GameFrame extends javax.swing.JFrame {
 		initComponents();
 		this.elemArray = (ArrayList<Element>) gameFile.readObject();
 		this.points = (Pontuation) gameFile.readObject();
-		//this.currentTetrisObject = (TetrisObject) gameFile.readObject();
 		this.gameSquares = (Square[][]) gameFile.readObject();
 		this.isFull = gameFile.readBoolean();
 		this.gameScreenWidth = gameFile.readInt();
 		this.gameScreenHeight = gameFile.readInt();
 		this.controller = new GameController(this);
 		this.addKeyListener(controller);
-		this.setSize(gameScreenWidth/* + 200*/-10, gameScreenHeight);
+		this.setSize(gameScreenWidth + 200, gameScreenHeight);
 		this.currentTetrisObject = null;
 		initScore();
 		playGame();
 	}
 
+	/**
+	 * Inicializa o Frame do Score.
+	 *
+	 */
 	private void initScore() {
-        placar.setLocation(gameScreenWidth+15,0);
-        placar.transferFocus();
-        this.requestFocus();
-    }
+		placar.setLocation(gameScreenWidth+15,0);
+		placar.transferFocus();
+		placar.setVisible(true);
+		this.requestFocus();
+	}
 
     /**
      * Método que inicia a lógica do game
@@ -163,9 +152,9 @@ public class GameFrame extends javax.swing.JFrame {
      * Método que finaliza o jogo e retorna para o Menu
      */
     private void finishGame() {
-        this.setVisible(false);
-        placar.setVisible(false);
-        Main.MAIN_MENU.setVisible(true);
+	    Main.MAIN_MENU.setVisible(true);
+	    this.setVisible(false);
+	    placar.setVisible(false);
     }
 
     /**
@@ -253,7 +242,31 @@ public class GameFrame extends javax.swing.JFrame {
          * 2º Ocupa a "gameSquares" com cada Square do GameObject (peça)
          * -------------------------------------------------------------------*/
         if (objLowerBoundsIsOccuped(currentTetrisObject) && currentTetrisObject.pieces[0].getContIntervals() == Square.TIMER_FIRE - 1) {
-            setDeactivatedPiece();
+            currentTetrisObject.desactivatePieces();
+
+            /*MARCA COMO OCUPADO ONDE A PEÇA CAIU e adiciona seus squares a "rowsSquares"*/
+            addGameObjectSquares(currentTetrisObject);
+
+            /*VERIFICA SE HOUVE PONTUAÇÃO*/
+            if (hasFilledRow()) {
+                int multPontuation = freeFilledRows();
+	            points.gain(multPontuation);
+	            placarScore.setText("Score: "+ points.getPoints());
+	            System.out.println("Pontuação: " + points.getPoints());
+            }
+            /*Possível GAME_OVER*/
+            else if (currentTetrisObject.getObjectBoundaries().highestX < 3) {
+                System.out.println("GAME OVER");
+                isFull = true;
+
+                finishGame();
+	            JOptionPane.showMessageDialog(Main.MAIN_MENU, "Game Over",
+			            "Game Over", JOptionPane.WARNING_MESSAGE);
+            }
+
+            /*Lança uma NOVA PEÇA*/
+            playGame();
+
         }
 	    g2.drawString("Pontuação: " + points.getPoints(), 0, 0);
 	    g.dispose();
@@ -261,33 +274,6 @@ public class GameFrame extends javax.swing.JFrame {
 	    if (!getBufferStrategy().contentsLost()) {
 		    getBufferStrategy().show();
 	    }
-    }
-
-    public void setDeactivatedPiece() {
-        currentTetrisObject.desactivatePieces();
-
-        /*MARCA COMO OCUPADO ONDE A PEÇA CAIU e adiciona seus squares a "rowsSquares"*/
-        addGameObjectSquares(currentTetrisObject);
-
-        /*VERIFICA SE HOUVE PONTUAÇÃO*/
-        if (hasFilledRow()) {
-            int multPontuation = freeFilledRows();
-            points.gain(multPontuation);
-            placarScore.setText("Score: "+ points.getPoints());
-            System.out.println("Pontuação: " + points.getPoints());
-        }
-        /*Possível GAME_OVER*/
-        else if (currentTetrisObject.getObjectBoundaries().highestX < 3) {
-            System.out.println("GAME OVER");
-            isFull = true;
-
-            finishGame();
-            JOptionPane.showMessageDialog(Main.MAIN_MENU, "Game Over",
-                    "Game Over", JOptionPane.WARNING_MESSAGE);
-        }
-
-        /*Lança uma NOVA PEÇA*/
-        playGame();
     }
 
     /**
@@ -346,10 +332,12 @@ public class GameFrame extends javax.swing.JFrame {
 
                 /*2. Desço todos os Squares que estavam acima*/
 	            for(int j = i; j > 0; j--) {
-		            gameSquares[j] = gameSquares[j - 1];
-		            for(int k = 0; k < Consts.NUM_COLUMNS; k++)
-			            if(gameSquares[j][k] != null)
-				            gameSquares[j][k].setPosition(gameSquares[j][k].getPos().getX() + 1, gameSquares[j][k].getPos().getY());
+		            for(int k = 0; k < Consts.NUM_COLUMNS; k++) {
+			            if (gameSquares[j][k] != null && gameSquares[j][k].isObstacle)
+				            continue;
+			            gameSquares[j][k] = gameSquares[j - 1][k];
+			            gameSquares[j][k].setPosition(gameSquares[j][k].getPos().getX() + 1, gameSquares[j][k].getPos().getY());
+		            }
 	            }
 	            for(int j = 0; j < Consts.NUM_COLUMNS; j++)
 		            gameSquares[0][j] = null;
@@ -386,21 +374,21 @@ public class GameFrame extends javax.swing.JFrame {
         return false;
     }
 
-    public boolean objUpperBoundsAreOccupied(GameObject obj) {
-        int x, y;
+	public boolean objUpperBoundsAreOccupied(GameObject obj) {
+		int x, y;
 
-        for (Square s : obj.pieces) {
-            x = s.getPos().getX(); y = s.getPos().getY();
+		for (Square s : obj.pieces) {
+			x = s.getPos().getX(); y = s.getPos().getY();
 
-            /*Se o Square atual está adjacente ao chão, true*/
-            if (x == 0) return true;
+			/*Se o Square atual está adjacente ao chão, true*/
+			if (x == 0) return true;
 
-                /*Se está adjacente a qualquer outro obstaculo de "gameSquares", true*/
-            else if (gameSquares[x - 1][y] != null) return true;
+				/*Se está adjacente a qualquer outro obstaculo de "gameSquares", true*/
+			else if (gameSquares[x - 1][y] != null) return true;
 
-        }
-        return false;
-    }
+		}
+		return false;
+	}
 
     /**
      * Método que verifica se o objeto está encostando em algo a esquerda
