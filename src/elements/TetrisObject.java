@@ -24,7 +24,7 @@ public class TetrisObject extends GameObject implements Serializable {
      */
     public TetrisObject(GameFrame gameFrame) {
         //type = TetrisObjectType.values()[new Random().nextInt(TetrisObjectType.values().length)];
-        type = TetrisObjectType.Z;
+        type = TetrisObjectType.S;
         squaresNumber = 4;
         pieces = new Square[squaresNumber];
         isActive = true;
@@ -190,11 +190,7 @@ public class TetrisObject extends GameObject implements Serializable {
                 break;
 
             case O:
-                for (int i = 0; i < 4; i++) pieces[i] = new Square(Square.YELLOW);
-                pieces[0].setPosition(0, Consts.NUM_COLUMNS/2);
-                pieces[1].setPosition(1, Consts.NUM_COLUMNS/2);
-                pieces[2].setPosition(0, Consts.NUM_COLUMNS/2 + 1);
-                pieces[3].setPosition(1, Consts.NUM_COLUMNS/2 + 1);
+
                 break;
 
             case L:
@@ -206,11 +202,18 @@ public class TetrisObject extends GameObject implements Serializable {
                 break;
 
             case S:
-                for (int i = 0; i < 4; i++) pieces[i] = new Square(Square.GREEN);
-                pieces[0].setPosition(0, Consts.NUM_COLUMNS/2);
-                pieces[1].setPosition(1, Consts.NUM_COLUMNS/2 - 1);
-                pieces[2].setPosition(1, Consts.NUM_COLUMNS/2);
-                pieces[3].setPosition(0, Consts.NUM_COLUMNS/2 + 1);
+                try {
+                    if (!gameFrame.objLeftBoundsIsOccuped(this)) throw new Exception();
+                    if (gameFrame.objLeftBoundsIsOccuped(this) && !gameFrame.objRightBoundsIsOccuped(this)) {
+                        this.shiftRight();
+                        throw new Exception();
+                    }
+
+                } catch (Exception e) {
+                    pieces[0].setPosition(keyPos.getX() - 1, keyPos.getY());
+                    pieces[1].setPosition(keyPos.getX(), keyPos.getY() - 1);
+                    pieces[3].setPosition(keyPos.getX() -1, keyPos.getY() + 1);
+                }
                 break;
 
             case T:
@@ -287,10 +290,18 @@ public class TetrisObject extends GameObject implements Serializable {
                 break;
 
             case S:
-                pieces[0].setPosition(0, Consts.NUM_COLUMNS/2);
-                pieces[1].setPosition(1, Consts.NUM_COLUMNS/2);
-                pieces[2].setPosition(1, Consts.NUM_COLUMNS/2 - 1);
-                pieces[3].setPosition(0, Consts.NUM_COLUMNS/2 + 1);
+                try {
+                    if (gameFrame.objLowerBoundsIsOccuped(this)) {
+                        if (!gameFrame.objUpperBoundsAreOccupied(this)) {
+                            this.shiftUp();
+                            throw new Exception();
+                        }
+                    } else throw new Exception();
+                } catch (Exception e) {
+                    pieces[0].setPosition(keyPos.getX() - 1, keyPos.getY());
+                    pieces[1].setPosition(keyPos.getX(), keyPos.getY() + 1);
+                    pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY() + 1);
+                }
                 break;
 
             case T:
@@ -360,10 +371,18 @@ public class TetrisObject extends GameObject implements Serializable {
                 break;
 
             case S:
-                pieces[0].setPosition(0, Consts.NUM_COLUMNS/2);
-                pieces[1].setPosition(1, Consts.NUM_COLUMNS/2);
-                pieces[2].setPosition(1, Consts.NUM_COLUMNS/2 - 1);
-                pieces[3].setPosition(0, Consts.NUM_COLUMNS/2 + 1);
+                try {
+                    if (!gameFrame.objLeftBoundsIsOccuped(this)) throw new Exception();
+                    if (gameFrame.objLeftBoundsIsOccuped(this) && !gameFrame.objRightBoundsIsOccuped(this)) {
+                        this.shiftRight();
+                        throw new Exception();
+                    }
+
+                } catch (Exception e) {
+                    pieces[0].setPosition(keyPos.getX() + 1, keyPos.getY() - 1);
+                    pieces[1].setPosition(keyPos.getX() + 1, keyPos.getY());
+                    pieces[3].setPosition(keyPos.getX(), keyPos.getY() + 1);
+                }
                 break;
 
             case T:
@@ -437,10 +456,18 @@ public class TetrisObject extends GameObject implements Serializable {
                 break;
 
             case S:
-                pieces[0].setPosition(0, Consts.NUM_COLUMNS/2);
-                pieces[1].setPosition(1, Consts.NUM_COLUMNS/2);
-                pieces[2].setPosition(1, Consts.NUM_COLUMNS/2 - 1);
-                pieces[3].setPosition(0, Consts.NUM_COLUMNS/2 + 1);
+                try {
+                    if (gameFrame.objUpperBoundsAreOccupied(this)) {
+                        if (!gameFrame.objLowerBoundsIsOccuped(this)) {
+                            this.shiftDown();
+                            throw new Exception();
+                        }
+                    } else throw new Exception();
+                } catch (Exception e) {
+                    pieces[0].setPosition(keyPos.getX(), keyPos.getY() - 1);
+                    pieces[1].setPosition(keyPos.getX() - 1, keyPos.getY() - 1);
+                    pieces[3].setPosition(keyPos.getX() + 1, keyPos.getY());
+                }
                 break;
 
             case T:
