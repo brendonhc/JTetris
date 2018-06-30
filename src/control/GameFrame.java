@@ -78,7 +78,7 @@ public class GameFrame extends javax.swing.JFrame {
 		gameScreenHeight = Consts.NUM_LINES * Consts.CELL_SIZE + getInsets().top + getInsets().bottom;
 
 		/*Cria a janela do tamanho do tabuleiro + insets (bordas) da janela*/
-		this.setSize(gameScreenWidth + 200, gameScreenHeight);
+		this.setSize(gameScreenWidth, gameScreenHeight);
 
 		this.elemArray = elemArray;
 
@@ -110,7 +110,7 @@ public class GameFrame extends javax.swing.JFrame {
 		this.gameScreenHeight = gameFile.readInt();
 		this.controller = new GameController(this);
 		this.addKeyListener(controller);
-		this.setSize(gameScreenWidth + 200, gameScreenHeight);
+		this.setSize(gameScreenWidth, gameScreenHeight);
 		this.currentTetrisObject = null;
 		initScore();
 		playGame();
@@ -123,6 +123,7 @@ public class GameFrame extends javax.swing.JFrame {
 	private void initScore() {
 		placar.setLocation(gameScreenWidth+15,0);
 		placar.transferFocus();
+		placarScore.setText("Score: "+ points.getPoints());
 		placar.setVisible(true);
 		this.requestFocus();
 	}
@@ -242,31 +243,7 @@ public class GameFrame extends javax.swing.JFrame {
          * 2º Ocupa a "gameSquares" com cada Square do GameObject (peça)
          * -------------------------------------------------------------------*/
         if (objLowerBoundsIsOccuped(currentTetrisObject) && currentTetrisObject.pieces[0].getContIntervals() == Square.TIMER_FIRE - 1) {
-            currentTetrisObject.desactivatePieces();
-
-            /*MARCA COMO OCUPADO ONDE A PEÇA CAIU e adiciona seus squares a "rowsSquares"*/
-            addGameObjectSquares(currentTetrisObject);
-
-            /*VERIFICA SE HOUVE PONTUAÇÃO*/
-            if (hasFilledRow()) {
-                int multPontuation = freeFilledRows();
-	            points.gain(multPontuation);
-	            placarScore.setText("Score: "+ points.getPoints());
-	            System.out.println("Pontuação: " + points.getPoints());
-            }
-            /*Possível GAME_OVER*/
-            else if (currentTetrisObject.getObjectBoundaries().highestX < 3) {
-                System.out.println("GAME OVER");
-                isFull = true;
-
-                finishGame();
-	            JOptionPane.showMessageDialog(Main.MAIN_MENU, "Game Over",
-			            "Game Over", JOptionPane.WARNING_MESSAGE);
-            }
-
-            /*Lança uma NOVA PEÇA*/
-            playGame();
-
+            setDeactivatedPiece();
         }
 	    g2.drawString("Pontuação: " + points.getPoints(), 0, 0);
 	    g.dispose();
@@ -336,7 +313,8 @@ public class GameFrame extends javax.swing.JFrame {
 			            if (gameSquares[j][k] != null && gameSquares[j][k].isObstacle)
 				            continue;
 			            gameSquares[j][k] = gameSquares[j - 1][k];
-			            gameSquares[j][k].setPosition(gameSquares[j][k].getPos().getX() + 1, gameSquares[j][k].getPos().getY());
+			            if(gameSquares[j][k] != null)
+			                gameSquares[j][k].setPosition(gameSquares[j][k].getPos().getX() + 1, gameSquares[j][k].getPos().getY());
 		            }
 	            }
 	            for(int j = 0; j < Consts.NUM_COLUMNS; j++)
@@ -456,6 +434,37 @@ public class GameFrame extends javax.swing.JFrame {
         timer.schedule(task, 0, Consts.DELAY_SCREEN_UPDATE);
     }
 
+
+	/**
+	 * Desativa uma peça.
+	 *
+	 */
+	public void setDeactivatedPiece() {
+		currentTetrisObject.desactivatePieces();
+
+		/*MARCA COMO OCUPADO ONDE A PEÇA CAIU e adiciona seus squares a "rowsSquares"*/
+		addGameObjectSquares(currentTetrisObject);
+
+		/*VERIFICA SE HOUVE PONTUAÇÃO*/
+		if (hasFilledRow()) {
+			int multPontuation = freeFilledRows();
+			points.gain(multPontuation);
+			placarScore.setText("Score: "+ points.getPoints());
+			System.out.println("Pontuação: " + points.getPoints());
+		}
+		/*Possível GAME_OVER*/
+		else if (currentTetrisObject.getObjectBoundaries().highestX < 3) {
+			System.out.println("GAME OVER");
+			isFull = true;
+
+			finishGame();
+			JOptionPane.showMessageDialog(Main.MAIN_MENU, "Game Over",
+					"Game Over", JOptionPane.WARNING_MESSAGE);
+		}
+
+		/*Lança uma NOVA PEÇA*/
+		playGame();
+	}
 
     /*Provavelmente Trecho herdado do GUI Form do netbeans, onde foi originalmente implementado o frame*/
     /**
